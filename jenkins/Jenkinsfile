@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    
+    tools {
+//         maven 'Maven 3.6.3'
+        maven 'MAVEN_391'
+    }
+    environment {
+        DOCKER_HUB = 'nguyenvnu87'
+        SERVICE_NAME = 'payment-service'
+        PORT = '8899'
+        REPLICAS = '1'
+        NETWORK = 'upis-network'
+    }
+     stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Build docker images') {
+            steps {
+                script {
+                    sh "docker build -t ${SERVICE_NAME} ."
+                }
+            }
+        }
+        stage('Deploy by Docker Compose'){
+            steps {
+                script {
+                    try {
+                        echo "------------- docker service update"
+                        sh "docker service update --force --image ${SERVICE_NAME}:latest ${SERVICE_NAME}"
+                    } catch (Exception e) {
+                        echo '------------- Exception occurred: ' + e.toString()
+                        echo "------------- docker service create"
+                        sh "docker service create --replicas ${REPLICAS} --name ${SERVICE_NAME} --network ${NETWORK} -p ${PORT}:${PORT} ${SERVICE_NAME}:latest"
+                    }
+                    sh "docker image prune --filter=dangling=true -f"
+                }
+            }
+        }
+     }
+}

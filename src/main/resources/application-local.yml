@@ -1,0 +1,55 @@
+#spring:
+#  config:
+#    import: configserver:http://localhost:8082/
+#  cloud:
+#    config:
+#      name: Demo-dev
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          #issuer-uri: https://upis-auth.uitgis.vn
+          issuer-uri: http://localhost:8900
+  mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER
+  mysql.datasource:
+    url: jdbc:mysql://localhost:3306/payment?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      minimum-idle: 2
+      validation-timeout: 20000
+  jpa:
+    #database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format_sql: true
+eureka:
+  instance:
+    #hostname: 103.82.133.193
+    statusPageUrl: http://localhost:8761/eureka/info
+    healthCheckUrl: http://localhost:8761/eureka/health
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://${registry.host:localhost}:${registry.port:8761}/eureka/
+
+#app:
+#  swagger:
+#    plugin: true
+server:
+  port: 8899
+  forward-headers-strategy: framework
+# Swagger config
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: 'com.uit.podcast.controller'
+    tryItOutEnabled: false
+    syntaxHighlight:
+      activated: true

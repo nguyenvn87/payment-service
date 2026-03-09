@@ -1,0 +1,8 @@
+spring:
+  config:
+    import: configserver:http://localhost:8082/
+  cloud:
+    config:
+      name: Demo-prod
+
+

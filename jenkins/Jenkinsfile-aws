@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.6.3'
+    }
+    environment {
+        DOCKER_HUB = 'nguyenvnu87'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cre-token')
+    }
+    stages {
+        stage('Build maven') {
+            steps {
+                echo 'Start build: product server'
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        //stage('Deploy manual') {
+        //    steps {
+        //        echo 'Deploy manual with DockerCompose'
+        //        println(sh(script: 'pwd', returnStdout: true))
+        //        sh 'cp "target/edge-service-0.0.1-SNAPSHOT.jar" "target/app.jar"'
+        //        echo 'Deploy manual with DockerCompose ${env.WORKSPACE}'
+        //        sh 'cd ..'
+        //        println(sh(script: 'pwd', returnStdout: true))
+        //        println(sh(script: 'whoami', returnStdout: true))
+               	//sh 'chmod +x -R ${env.WORKSPACE}'
+       //     }
+        //}
+        stage('Build docker image') {
+            steps {
+                //-----docker hub token
+                // dckr_pat_K06jQghcZvnGp7DqnCc3nYLVw7g
+                //
+                echo 'Start build image by docker'
+                println(sh(script: 'docker --version', returnStdout: true))
+                sh 'docker build -t nguyenvnu87/edge-service-1.0:latest .'
+                echo 'Build image completed'
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                echo 'Start build image by docker'
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                echo 'Login Docker hub Completed'
+            }
+        }
+        stage('Docker Push Image') {
+            steps {
+                sh 'docker push ${DOCKER_HUB}/edge-service-1.0:latest'
+            }
+        }
+        stage('SSH server') {
+            steps {
+                sshagent(['ssh-remote-aws-db2']) {
+                	echo 'SSH sshagent 11111'
+                	println(sh(script: 'whoami', returnStdout: true))
+                	//sh 'ssh -A ec2-user@18.136.204.106 ls -al'
+                	sh 'ssh -o StrictHostKeyChecking=no -l ec2-user 175.41.160.221 touch test.txt'
+                	echo 'SSH sshagent 2222'
+                	println(sh(script: 'pwd', returnStdout: true))
+                    sh 'ssh -o StrictHostKeyChecking=no -l ec2-user 175.41.160.221 touch test2.txt'
+                    echo 'SSH sshagent create file is Ok'
+                    //println(sh(script: 'docker-compose --version', returnStdout: true))
+                    println(sh(script: 'pwd', returnStdout: true))
+                    println(sh(script: 'whoami', returnStdout: true))
+                    echo 'SSH server start build'
+                }
+            }
+        }
+        stage('SSH server & Run app') {
+            steps {
+                sshagent(['ssh-remote-aws-db2']) {
+                	echo 'SSH sshagent create Text .....'
+                    sh 'ssh -o StrictHostKeyChecking=no -l ec2-user 175.41.160.221 touch test5.txt'
+                    echo 'Call docker.....'
+                    sh 'ssh -o StrictHostKeyChecking=no -l ec2-user 175.41.160.221 """docker-compose --version""" '
+                    sh 'ssh -o StrictHostKeyChecking=no -l ec2-user 175.41.160.221 """docker-compose -f /home/ec2-user/app/docker-compose.yaml up --force-recreate -d""" '
+                    
+                }
+            }
+        }
+
+    }
+}

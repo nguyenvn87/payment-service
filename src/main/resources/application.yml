@@ -1,0 +1,50 @@
+app:
+  swagger:
+    plugin: true
+server:
+  port: 8899
+spring:
+  profiles:
+    active: local
+  application:
+    name: Payment-service
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://192.168.1.200:8900
+  mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER
+  servlet.multipart:
+    max-file-size: 500MB
+    max-request-size: 500MB
+
+# ribbon:
+#  ServerListRefreshInterval: 1000
+#  eureka:
+#   enabled: true
+#server.ribbon.listOfServers=localhost:9090,localhost:9091,localhost:9092
+
+logging:
+  file:
+    name: logs/app-out.log
+  level:
+    org.springframework.web.servlet.DispatcherServlet: TRACE
+    org.hibernate.type.descriptor.sql: OFF
+    org.hibernate.SQL: OFF
+    org.hibernate.type.descriptor.sql.BasicBinder: OFF
+
+feign:
+  hystrix:
+    enabled: true
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: 'com.uit.podcast.controller'
+    tryItOutEnabled: false
+    syntaxHighlight:
+      activated: true
+amazonProperties:
+  endpointUrl: https://s3.us-east-2.amazonaws.com
+  accessKey: AKIAQ5EDSBZSNLXVO7YV
+  secretKey: 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
+  bucketName: bivepodcast
