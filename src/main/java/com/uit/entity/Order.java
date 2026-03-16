@@ -2,19 +2,20 @@ package com.uit.entity;
 
 import com.uit.common.constant.PaymentStsEnums;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "E_Cart")
-public class ECart {
+@Table(name = "E_ORDER")
+@NoArgsConstructor @AllArgsConstructor
+public class Order {
 
     @Id
     @Column(name = "ORDER_ID")
@@ -47,6 +48,8 @@ public class ECart {
     private String ref;
 
     @OneToMany(mappedBy = "cart")
-    private List<ECartDetail> details = new ArrayList<>();
-    // Getters and setters
+    private List<OrderDetail> details = new ArrayList<>();
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TopupHistory transaction;
 }

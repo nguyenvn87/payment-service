@@ -1,7 +1,10 @@
 package com.uit.entity;
 
+import com.uit.common.constant.ServiceTypeEnums;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,8 +12,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "E_Cart_Detail")
-public class ECartDetail {
+@Table(name = "E_ORDER_DETAIL")
+@NoArgsConstructor @AllArgsConstructor
+public class OrderDetail {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -20,8 +24,7 @@ public class ECartDetail {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private ECart cart;
-    //private ECart cart;
+    private Order cart;
 
     @Column(name = "AMOUNT")
     private Float amount;
@@ -33,8 +36,10 @@ public class ECartDetail {
     @Column(name = "PRICE",length = 18)
     private Float price;
 
-    @Column(name = "TOTAL_MONEY",length = 18)
-    private Float totalMoney;
+    @Column(name = "SERVICE_ID")
+    private String serviceId;
 
-    // Getters and setters
+    @Column(name = "SERVICE_TYPE")
+    private ServiceTypeEnums serviceType;
+
 }
