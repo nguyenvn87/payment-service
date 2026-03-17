@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +19,10 @@ import java.util.List;
 public class Order {
 
     @Id
-    @Column(name = "ORDER_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    @Column(name = "ORDER_ID", columnDefinition = "VARCHAR(36)")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String orderId;
 
     @Column(name = "BILL_CD",length = 36)
     private String billCode;

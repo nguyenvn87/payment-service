@@ -2,7 +2,7 @@ app:
   swagger:
     plugin: true
 server:
-  port: 8899
+  port: 8890
 spring:
   profiles:
     active: local
@@ -43,8 +43,3 @@ springdoc:
     tryItOutEnabled: false
     syntaxHighlight:
       activated: true
-amazonProperties:
-  endpointUrl: https://s3.us-east-2.amazonaws.com
-  accessKey: AKIAQ5EDSBZSNLXVO7YV
-  secretKey: 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
-  bucketName: bivepodcast

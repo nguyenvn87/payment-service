@@ -1,21 +1,17 @@
 package com.uit.entity;
 
-import com.uit.common.constant.PaymentStsEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Data
 @Entity
-@Table(name = "E_USER_POINT")
+@Table(name = "E_USER_WALLET")
 @NoArgsConstructor @AllArgsConstructor
-public class UserPoint {
+public class UserWallet {
 
     @Id
     @Column(name = "USER_ID", length = 18)

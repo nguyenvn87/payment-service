@@ -105,9 +105,9 @@ eureka:
 #app:
 #  swagger:
 #    plugin: true
-server:
-  port: 8899
-  forward-headers-strategy: framework
+#server:
+#  port: 8899
+#  forward-headers-strategy: framework
 # Swagger config
 springdoc:
   swagger-ui:
