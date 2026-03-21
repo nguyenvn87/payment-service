@@ -1,6 +1,7 @@
 package com.uit.entity;
 
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.PurchaseTypeEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,7 +47,11 @@ public class Order {
     @Column(name = "PAY_STS", length = 18)
     private PaymentStsEnums payStatus;
 
-    @Column(name = "REF", length = 10)
+    // Mua bằng tiền hoặc bằng điểm thưởng
+    @Column(name = "PURCHASE_TYPE", length = 10)
+    private PurchaseTypeEnums purchaseType;
+
+    @Column(name = "REF_CODE", length = 10)
     private String ref;
 
     @OneToMany(mappedBy = "cart")
