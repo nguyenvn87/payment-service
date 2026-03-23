@@ -1,4 +1,6 @@
-package com.uit.dto;
+package com.uit.dto.response;
+
+import com.uit.dto.request.TransactionResponseObject;
 
 public class SuccessResponse {
     private boolean error;

@@ -1,6 +1,11 @@
 package com.uit.payment.controller;
 
-import com.uit.dto.*;
+import com.uit.config.JwtUtil;
+import com.uit.dto.request.TransactionCallback;
+import com.uit.dto.request.TransactionResponseObject;
+import com.uit.dto.response.ErrorResponse;
+import com.uit.dto.response.SuccessResponse;
+import com.uit.dto.response.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("/vqr/api")
+@RequestMapping("api/payment/vqr")
 public class PaymentController {
 
-    private static final String VALID_USERNAME = "customer-vietqrtest-user2468";
+    private static final String VALID_USERNAME = "customer-vietqrtest-bive";
     // Đây là chuỗi base64 từ username:password thật của bạn.
-    private static final String VALID_PASSWORD = "Y3VzdG9tZXItdmlldHFydGVzdC11c2VyMjQ2ODpZM1Z6ZEc5dFpYSXRkbWxsZEhGeWRHVnpkQzExYzJWeU1qUTJPQT09";
-
-    private static final String SECRET_KEY = "your-256-bit-secret"; // Secret key để kiểm tra JWT
+    private static final String VALID_PASSWORD = "Y3VzdG9tZXItdmlldHFydGVzdC1iaXZlOlZpZXRxcnRlc3RiaXZl";
     private static final String BEARER_PREFIX = "Bearer ";
 
     @PostMapping("/token_generate")
@@ -29,10 +32,8 @@ public class PaymentController {
             String username = values[0];
             String password = values[1];
 
-            // Kiểm tra tính hợp lệ của username và password
             if (VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password)) {
-                // Nếu hợp lệ, tạo JWT token
-                String token = "your-generated-jwt-token"; // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
+                String token = JwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
 
                 return ResponseEntity.ok(new TokenResponse(token, "Bearer", 300));
             } else {
@@ -56,7 +57,7 @@ public class PaymentController {
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
 
         // Xác thực token
-        if (!validateToken(token)) {
+        if (!JwtUtil.validateJwtToken(token)) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
@@ -75,19 +76,4 @@ public class PaymentController {
         }
     }
 
-    // Phương thức để xác thực token JWT
-    private boolean validateToken(String token) {
-        // Đây là phương pháp giả sử validate token với SECRET_KEY
-        // Bạn có thể tích hợp JWT library như `io.jsonwebtoken` để validate
-        try {
-            // Giả sử giải mã token với SECRET_KEY
-            byte[] secretKeyBytes = SECRET_KEY.getBytes();
-            String decodedToken = new String(Base64.getDecoder().decode(token.getBytes()));
-
-            // Kiểm tra token hợp lệ (thực tế nên sử dụng JWT library như jjwt)
-            return decodedToken.contains(SECRET_KEY);
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
