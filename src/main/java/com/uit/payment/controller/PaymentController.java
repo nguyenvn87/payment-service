@@ -57,7 +57,7 @@ public class PaymentController {
     }
 
     @PostMapping("/transaction-sync")
-    public ResponseEntity<Object> transactionSync(@RequestBody TransactionCallback transactionCallback,
+    public ResponseEntity<?> transactionSync(@RequestBody TransactionCallback transactionCallback,
                                                   HttpServletRequest request) {
         // Lấy token từ header Authorization
         String authHeader = request.getHeader("Authorization");
@@ -80,6 +80,7 @@ public class PaymentController {
 
             // Trả về response 200 OK với thông tin giao dịch
             TransactionResponseObject transactionResponse = new TransactionResponseObject(refTransactionId);
+
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {

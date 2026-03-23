@@ -60,6 +60,6 @@ security:
       password: Vietqrtestbive
     jwt:
       secret-key: 'my-secret-key-my-secret-key-my-secret-key'
-      expiration: 60000
+      expiration: 3600000
 
 

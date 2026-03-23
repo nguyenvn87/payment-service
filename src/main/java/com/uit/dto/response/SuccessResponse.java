@@ -1,7 +1,9 @@
 package com.uit.dto.response;
 
 import com.uit.dto.request.TransactionResponseObject;
+import lombok.Data;
 
+@Data
 public class SuccessResponse {
     private boolean error;
     private String errorReason;
