@@ -12,12 +12,6 @@ import java.util.Base64;
 public class PaymentServiceApplication {
 
 	public static void main(String[] args) {
-
-		String original = "customer-vietqrtest-bive:Vietqrtestbive";
-		String encoded = Base64.getEncoder()
-				.encodeToString(original.getBytes());
-		System.out.println(encoded);
-
 		SpringApplication.run(PaymentServiceApplication.class, args);
 	}
 

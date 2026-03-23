@@ -116,3 +116,11 @@ springdoc:
     tryItOutEnabled: false
     syntaxHighlight:
       activated: true
+
+security:
+  vqr:
+    username: customer-vietqrtest-bive
+    password: Vietqrtestbive
+  jwt:
+    secret-key: 'my-secret-key-my-secret-key-my-secret-key'
+    expiration: 60000

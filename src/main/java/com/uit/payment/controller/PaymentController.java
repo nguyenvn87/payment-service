@@ -7,6 +7,7 @@ import com.uit.dto.response.ErrorResponse;
 import com.uit.dto.response.SuccessResponse;
 import com.uit.dto.response.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("api/payment/vqr")
+@RequestMapping("api/v1/vqr")
 public class PaymentController {
 
-    private static final String VALID_USERNAME = "customer-vietqrtest-bive";
-    // Đây là chuỗi base64 từ username:password thật của bạn.
-    private static final String VALID_PASSWORD = "Y3VzdG9tZXItdmlldHFydGVzdC1iaXZlOlZpZXRxcnRlc3RiaXZl";
+    @Value("${security.vqr.username}")
+    private String VALID_USERNAME ;
+    @Value("${security.vqr.password}")
+    private String VALID_PASSWORD;
+    @Value("${security.jwt.expiration}")
+    private int EXPIRATION_ACCESS_TOKEN;
+
     private static final String BEARER_PREFIX = "Bearer ";
+
+    private final JwtUtil jwtUtil;
+
+    public PaymentController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping("/token_generate")
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
@@ -33,9 +44,9 @@ public class PaymentController {
             String password = values[1];
 
             if (VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password)) {
-                String token = JwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
+                String token = jwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
 
-                return ResponseEntity.ok(new TokenResponse(token, "Bearer", 300));
+                return ResponseEntity.ok(new TokenResponse(token, "Bearer", EXPIRATION_ACCESS_TOKEN));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
@@ -57,7 +68,7 @@ public class PaymentController {
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
 
         // Xác thực token
-        if (!JwtUtil.validateJwtToken(token)) {
+        if (jwtUtil.validateJwtToken(token)) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
