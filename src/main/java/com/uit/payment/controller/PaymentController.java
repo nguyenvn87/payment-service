@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/vqr")
@@ -68,14 +69,14 @@ public class PaymentController {
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
 
         // Xác thực token
-        if (jwtUtil.validateJwtToken(token)) {
+        if (!jwtUtil.validateJwtToken(token)) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
 
         try {
             // Xử lý nghiệp vụ, sinh mã refTransactionId (Giả sử tạo một mã ngẫu nhiên)
-            String refTransactionId = "GeneratedRefTransactionId"; // Sinh ID của giao dịch
+            String refTransactionId = String.valueOf(UUID.randomUUID()); // Sinh ID của giao dịch
 
             // Trả về response 200 OK với thông tin giao dịch
             TransactionResponseObject transactionResponse = new TransactionResponseObject(refTransactionId);
