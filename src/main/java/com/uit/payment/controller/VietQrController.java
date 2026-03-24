@@ -25,23 +25,31 @@ public class VietQrController {
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
 
         log.info("==================== Start generate token qr code  ========================");
-        String response = vietQrService.getTokenGenerateQR(authHeader, MediaType.APPLICATION_JSON_VALUE);
-        log.info("==================== generate token qr code  ========================" + authHeader);
-        log.info("==================== generate token qr code  ========================" + MediaType.APPLICATION_JSON_VALUE);
-        log.info("==================== generate token qr code  ========================" + response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            String response = vietQrService.getTokenGenerateQR(authHeader, MediaType.APPLICATION_JSON_VALUE);
+            log.info("==================== generate token qr code  ========================" + authHeader);
+            log.info("==================== generate token qr code  ========================" + MediaType.APPLICATION_JSON_VALUE);
+            log.info("==================== generate token qr code  ========================" + response);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/generate-qr")
     public ResponseEntity<?> generateQr(@RequestHeader("Authorization") String authHeader,
                                         @RequestBody InfoVietQrReq infoVietQrReq) {
 
-        log.info("==================== Start generate qr code  ========================");
-        String response = vietQrService.generateQR(authHeader, MediaType.APPLICATION_JSON_VALUE,infoVietQrReq);
-        log.info("==================== generate qr code  ========================" + authHeader);
-        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
-        log.info("==================== generate qr code  ========================" + response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            log.info("==================== Start generate qr code  ========================");
+            String response = vietQrService.generateQR(authHeader, MediaType.APPLICATION_JSON_VALUE, infoVietQrReq);
+            log.info("==================== generate qr code  ========================" + authHeader);
+            log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
+            log.info("==================== generate qr code  ========================" + response);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

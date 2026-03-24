@@ -14,8 +14,6 @@ public interface VietQrService {
     String getTokenGenerateQR(
             @RequestHeader("Authorization") String token,
             @RequestHeader("Content-Type") String contentType
-//            @RequestHeader(MediaType.APPLICATION_JSON_VALUE)
-//            @RequestBody InfoVietQrReq request
     );
 
     @PostMapping("/vqr/api/qr/generate-customer")
