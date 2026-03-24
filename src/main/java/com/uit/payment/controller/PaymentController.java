@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/resource")
+@RequestMapping("payment/v1")
 public class PaymentController {
 
     @Value("${payment.vqr.username}")
@@ -37,7 +37,7 @@ public class PaymentController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/token_generate")
+    @PostMapping("/api/token_generate")
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
         log.info("==================== Generating token ========================");
         if (authHeader != null && authHeader.startsWith("Basic ")) {
@@ -66,7 +66,7 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/transaction-sync")
+    @PostMapping("/bank/api/transaction-sync")
     public ResponseEntity<?> transactionSync(@RequestBody TransactionCallback transactionCallback,
                                                   HttpServletRequest request) {
         // Lấy token từ header Authorization
