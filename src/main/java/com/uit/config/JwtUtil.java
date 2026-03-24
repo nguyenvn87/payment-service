@@ -14,9 +14,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    @Value("${security.jwt.secret-key}")
+    @Value("${payment.jwt.secret-key}")
     private String SECRET ;
-    @Value("${security.jwt.expiration}")
+    @Value("${payment.jwt.expiration}")
     private int EXPIRATION_ACCESS_TOKEN;
 
     private SecretKey getSigningKey() {

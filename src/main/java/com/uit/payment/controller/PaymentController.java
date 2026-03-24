@@ -7,6 +7,7 @@ import com.uit.dto.response.ErrorResponse;
 import com.uit.dto.response.SuccessResponse;
 import com.uit.dto.response.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
+@Slf4j
 @RestController
-@RequestMapping("api/v1/vqr")
+@RequestMapping("api/v1/resource")
 public class PaymentController {
 
-    @Value("${security.vqr.username}")
+    @Value("${payment.vqr.username}")
     private String VALID_USERNAME ;
-    @Value("${security.vqr.password}")
+    @Value("${payment.vqr.password}")
     private String VALID_PASSWORD;
-    @Value("${security.jwt.expiration}")
+    @Value("${payment.jwt.expiration}")
     private int EXPIRATION_ACCESS_TOKEN;
 
     private static final String BEARER_PREFIX = "Bearer ";
@@ -37,6 +39,7 @@ public class PaymentController {
 
     @PostMapping("/token_generate")
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
+        log.info("==================== Generating token ========================");
         if (authHeader != null && authHeader.startsWith("Basic ")) {
             String base64Credentials = authHeader.substring("Basic ".length()).trim();
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
@@ -44,14 +47,21 @@ public class PaymentController {
             String username = values[0];
             String password = values[1];
 
+            log.info("==================== VALID_USERNAME  ======================== : "+ VALID_USERNAME);
+            log.info("==================== VALID_PASSWORD  ======================== : "+ VALID_PASSWORD);
+            log.info("==================== username  ======================== : " + username);
+            log.info("==================== password  ======================== : " + password);
+
             if (VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password)) {
                 String token = jwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
-
+                log.info("==================== valid successful ========================");
                 return ResponseEntity.ok(new TokenResponse(token, "Bearer", EXPIRATION_ACCESS_TOKEN));
             } else {
+                log.info("==================== Invalid username or password ========================");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
         } else {
+            log.info("==================== Header not start with basic ========================");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing or invalid");
         }
     }
@@ -60,6 +70,7 @@ public class PaymentController {
     public ResponseEntity<?> transactionSync(@RequestBody TransactionCallback transactionCallback,
                                                   HttpServletRequest request) {
         // Lấy token từ header Authorization
+        log.info("==================== Transaction sync ========================");
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_AUTH_HEADER",
@@ -68,11 +79,14 @@ public class PaymentController {
 
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
 
+        log.info("==================== validate with token ======================== : " + token);
         // Xác thực token
         if (!jwtUtil.validateJwtToken(token)) {
+            log.info("==================== validate token fail ========================");
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
+        log.info("==================== validate token successful 1 ========================");
 
         try {
             // Xử lý nghiệp vụ, sinh mã refTransactionId (Giả sử tạo một mã ngẫu nhiên)
@@ -81,10 +95,12 @@ public class PaymentController {
             // Trả về response 200 OK với thông tin giao dịch
             TransactionResponseObject transactionResponse = new TransactionResponseObject(refTransactionId);
 
+            log.info("==================== validate token successful 2 ========================");
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {
             // Trả về lỗi trong trường hợp có exception
+            log.info("==================== TRANSACTION FAILED ========================");
             return new ResponseEntity<>(new ErrorResponse(true, "TRANSACTION_FAILED", ex.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
     }

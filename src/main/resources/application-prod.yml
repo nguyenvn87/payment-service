@@ -117,7 +117,7 @@ springdoc:
     syntaxHighlight:
       activated: true
 
-security:
+payment:
   vqr:
     username: customer-vietqrtest-bive
     password: Vietqrtestbive
