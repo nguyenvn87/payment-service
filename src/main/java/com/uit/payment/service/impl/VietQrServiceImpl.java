@@ -19,7 +19,7 @@ public class VietQrServiceImpl implements VietQrService {
 
     @Value("${payment.client.username}")
     private String CLIENT_USERNAME;
-    @Value("${payment.client.username}")
+    @Value("${payment.client.password}")
     private String CLIENT_PASSWORD; ;
 
     private final FeignClientVietQrService feignClientVietQrService;
@@ -33,11 +33,11 @@ public class VietQrServiceImpl implements VietQrService {
     @Override
     public TokenResponse getTokenToCallQR(){
 
-        ResponseEntity<TokenResponse> response = feignClientVietQrService.getTokenGenerateQR(
-                jwtUtil.basicAuth(CLIENT_USERNAME,CLIENT_PASSWORD));
+        String token = jwtUtil.basicAuth(CLIENT_USERNAME,CLIENT_PASSWORD);
+        ResponseEntity<TokenResponse> response = feignClientVietQrService.getTokenGenerateQR(token);
         log.info("Call to api get token VietQr : {}", response.getStatusCode());
         return response.getBody();
-        
+
     }
 
     @Override

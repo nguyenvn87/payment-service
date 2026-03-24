@@ -21,13 +21,13 @@ public enum PaymentError {
     // ===== SYSTEM ERROR =====
     INTERNAL_ERROR("FAIL","99", "500", "Lỗi hệ thống");
 
-    private final String error;
+    private final String result;
     private final String errorCode;
     private final String errorStatusCode;
     private final String errorMessage;
 
-    PaymentError(String error, String errorCode, String errorStatusCode, String errorMessage) {
-        this.error = error;
+    PaymentError(String result, String errorCode, String errorStatusCode, String errorMessage) {
+        this.result = result;
         this.errorCode = errorCode;
         this.errorStatusCode = errorStatusCode;
         this.errorMessage = errorMessage;

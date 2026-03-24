@@ -1,12 +1,15 @@
 package com.uit.common.exceptions;
 
+import lombok.Data;
+
+@Data
 public class PaymentSuccess {
 
-    private final String error;
+    private final String result;
     private final Object data;
 
-    public PaymentSuccess(String error, Object data) {
-        this.error = "SUCCESS";
+    public PaymentSuccess(Object data) {
+        this.result = "SUCCESS";
         this.data = data;
     }
 }

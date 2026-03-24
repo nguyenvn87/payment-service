@@ -1,5 +1,6 @@
 package com.uit.payment.controller;
 
+import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.TokenResponse;
 import com.uit.payment.FeignClientVietQrService;
@@ -26,7 +27,7 @@ public class VietQrController {
         try {
             TokenResponse response = vietQrService.getTokenToCallQR();
             log.info("==================== generate token qr code  ========================" + response);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -42,7 +43,7 @@ public class VietQrController {
             log.info("==================== generate qr code  ========================" + authHeader);
             log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
             log.info("==================== generate qr code  ========================" + response);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
