@@ -20,27 +20,25 @@ public class VietQrController {
     @Autowired
     private VietQrService vietQrService;
 
-    @PostMapping("/generate/token-qr")
-    public ResponseEntity<?> generateToken() {
-
-        log.info("==================== Start generate token qr code  ========================");
-        try {
-            TokenResponse response = vietQrService.getTokenToCallQR();
-            log.info("==================== generate token qr code  ========================" + response);
-            return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/generate/token-qr")
+//    public ResponseEntity<?> generateToken() {
+//
+//        log.info("==================== Start generate token qr code  ========================");
+//        try {
+//            TokenResponse response = vietQrService.getTokenToCallQR();
+//            log.info("==================== generate token qr code  ========================" + response);
+//            return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
+//        }catch (Exception e){
+//            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @PostMapping("/generate-qr")
-    public ResponseEntity<?> generateQr(@RequestHeader("Authorization") String authHeader,
-                                        @RequestBody InfoVietQrReq infoVietQrReq) {
+    public ResponseEntity<?> generateQr(@RequestBody InfoVietQrReq infoVietQrReq) {
 
         try {
             log.info("==================== Start generate qr code  ========================");
-            String response = vietQrService.generateQR(authHeader, infoVietQrReq);
-            log.info("==================== generate qr code  ========================" + authHeader);
+            String response = vietQrService.generateQR(infoVietQrReq);
             log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
             log.info("==================== generate qr code  ========================" + response);
             return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);

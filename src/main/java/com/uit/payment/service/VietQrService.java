@@ -7,6 +7,6 @@ public interface VietQrService {
 
     TokenResponse getTokenToCallQR();
 
-    String generateQR(String authHeader, InfoVietQrReq infoVietQrReq);
+    String generateQR( InfoVietQrReq infoVietQrReq);
 
 }

@@ -41,12 +41,13 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
     @Override
-    public String generateQR(String authHeader, InfoVietQrReq infoVietQrReq) {
+    public String generateQR(InfoVietQrReq infoVietQrReq) {
 
-        ResponseEntity<InfoVietQrRes> response = feignClientVietQrService.generateQR(authHeader, infoVietQrReq);
+        String accessToken = getTokenToCallQR().getAccess_token();
+        ResponseEntity<InfoVietQrRes> response =
+                feignClientVietQrService.generateQR("Bearer " + accessToken, infoVietQrReq);
         log.info("Call to api get QR code : {}", response.getStatusCode());
         return Objects.requireNonNull(response.getBody()).qrLink();
-
     }
 
 }
