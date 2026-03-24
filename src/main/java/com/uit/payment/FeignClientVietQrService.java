@@ -1,7 +1,7 @@
 package com.uit.payment;
 
 import com.uit.dto.request.InfoVietQrReq;
-import com.uit.dto.response.InfoVietQrResponse;
+import com.uit.dto.response.InfoVietQrRes;
 import com.uit.dto.response.TokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public interface FeignClientVietQrService {
     );
 
     @PostMapping(value = "/vqr/api/qr/generate-customer", consumes = "application/json")
-    ResponseEntity<InfoVietQrResponse> generateQR(
+    ResponseEntity<InfoVietQrRes> generateQR(
             @RequestHeader("Authorization") String token,
             @RequestBody InfoVietQrReq request
     );

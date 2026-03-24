@@ -2,7 +2,7 @@ package com.uit.payment.service.impl;
 
 import com.uit.config.JwtUtil;
 import com.uit.dto.request.InfoVietQrReq;
-import com.uit.dto.response.InfoVietQrResponse;
+import com.uit.dto.response.InfoVietQrRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.service.VietQrService;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -35,8 +35,8 @@ public class VietQrServiceImpl implements VietQrService {
 
         ResponseEntity<TokenResponse> response = feignClientVietQrService.getTokenGenerateQR(
                 jwtUtil.basicAuth(CLIENT_USERNAME,CLIENT_PASSWORD));
-        log.info("Call to api get token VietQr : " + response.getStatusCode());
-        if (response.getStatusCode().is1xxInformational()){
+        log.info("Call to api get token VietQr : {}", response.getStatusCode());
+        if (response.getStatusCode().is2xxSuccessful()){
             return response.getBody();
         }
         return response.getBody();
@@ -45,7 +45,11 @@ public class VietQrServiceImpl implements VietQrService {
     @Override
     public String generateQR(String authHeader, InfoVietQrReq infoVietQrReq) {
 
-        ResponseEntity<InfoVietQrResponse> response = feignClientVietQrService.generateQR(authHeader, infoVietQrReq);
+        ResponseEntity<InfoVietQrRes> response = feignClientVietQrService.generateQR(authHeader, infoVietQrReq);
+        log.info("Call to api get QR code : {}", response.getStatusCode());
+        if (response.getStatusCode().is2xxSuccessful()){
+            return Objects.requireNonNull(response.getBody()).qrLink();
+        }
         return "";
     }
 

@@ -2,7 +2,7 @@ package com.uit.dto.response;
 
 import java.util.List;
 
-public record InfoVietQrResponse(
+public record InfoVietQrRes(
         String bankCode,
         String bankName,
         String bankAccount,
