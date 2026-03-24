@@ -3,6 +3,7 @@ package com.uit.common.exceptions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.http.HttpStatus;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -11,7 +12,7 @@ public class PaymentException extends RuntimeException{
 
     private String error;
     private String errorCode;
-    private String errorStatusCode;
+    private HttpStatus errorStatusCode;
     private String errorMessage;
 
     public PaymentException(PaymentError paymentError) {

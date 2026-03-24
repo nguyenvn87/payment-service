@@ -4,6 +4,7 @@ import com.uit.common.constant.ErrorCode;
 import com.uit.common.exceptions.BusinessException;
 import com.uit.common.exceptions.HttpStatusResponse;
 import com.uit.common.exceptions.PaymentException;
+import com.uit.dto.response.ErrorPaymentResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,21 @@ public class ExceptionHandlerController {
 
     private final Logger errorLog = LoggerFactory.getLogger("ELK-ERROR-LOG");
 
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorPaymentResponse> handlePaymentExceptions(PaymentException ex) {
+
+        ErrorPaymentResponse errorResponse = new ErrorPaymentResponse(
+                ex.getError(),
+                ex.getErrorCode(),
+                ex.getErrorStatusCode(),
+                ex.getErrorMessage()
+        );
+
+        return ResponseEntity
+                .status(ex.getErrorStatusCode())
+                .body(errorResponse);
+    }
+
     @ExceptionHandler({Exception.class, RuntimeException.class})
     @ResponseBody
     @ResponseStatus(INTERNAL_SERVER_ERROR)
@@ -58,13 +74,6 @@ public class ExceptionHandlerController {
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.status(BAD_REQUEST).body(new HttpStatusResponse(BAD_REQUEST.toString(), errors));
-    }
-
-    @ExceptionHandler(PaymentException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ResponseEntity<?> handlePaymentExceptions(PaymentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new PaymentException(ex.getError(),ex.getErrorCode(),ex.getErrorStatusCode(),ex.getMessage()));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

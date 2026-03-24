@@ -1,5 +1,7 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.exceptions.PaymentError;
+import com.uit.common.exceptions.PaymentException;
 import com.uit.config.JwtUtil;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
@@ -10,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -31,23 +31,62 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
     @Override
-    public TokenResponse getTokenToCallQR(){
+    public TokenResponse getTokenToCallQR() {
 
-        String token = jwtUtil.basicAuth(CLIENT_USERNAME,CLIENT_PASSWORD);
-        ResponseEntity<TokenResponse> response = feignClientVietQrService.getTokenGenerateQR(token);
+        String basicAuth = jwtUtil.basicAuth(CLIENT_USERNAME, CLIENT_PASSWORD);
+
+        ResponseEntity<TokenResponse> response =
+                feignClientVietQrService.getTokenGenerateQR(basicAuth);
+
         log.info("Call to api get token VietQr : {}", response.getStatusCode());
-        return response.getBody();
 
+        // ✅ Check HTTP status
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new PaymentException(PaymentError.VIETQR_CALL_API_FAIL);
+        }
+
+        // ✅ Check body null
+        TokenResponse body = response.getBody();
+        if (body == null) {
+            throw new PaymentException(PaymentError.VIETQR_RESPONSE_BODY_NULL);
+        }
+
+        // ✅ Check access_token
+        if (body.getAccess_token() == null || body.getAccess_token().isBlank()) {
+            throw new PaymentException(PaymentError.VIETQR_ACCESS_TOKEN_NULL);
+        }
+
+        return body;
     }
 
     @Override
     public String generateQR(InfoVietQrReq infoVietQrReq) {
 
-        String accessToken = getTokenToCallQR().getAccess_token();
+        TokenResponse tokenResponse = getTokenToCallQR();
+        String accessToken = tokenResponse.getAccess_token();
+
         ResponseEntity<InfoVietQrRes> response =
                 feignClientVietQrService.generateQR("Bearer " + accessToken, infoVietQrReq);
+
         log.info("Call to api get QR code : {}", response.getStatusCode());
-        return Objects.requireNonNull(response.getBody()).qrLink();
+
+        // ✅ Check HTTP status
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new PaymentException(PaymentError.VIETQR_ACCESS_TOKEN_NULL);
+        }
+
+        // ✅ Check body null
+        InfoVietQrRes body = response.getBody();
+        if (body == null) {
+            throw new PaymentException(PaymentError.VIETQR_GETQR_RESPONSE_BODY_NULL);
+        }
+
+        // ✅ Check dữ liệu quan trọng
+        if (body.qrLink() == null || body.qrLink().isBlank()) {
+            throw new PaymentException(PaymentError.VIETQR_GETQR_NULL);
+        }
+
+        return body.qrLink();
     }
 
 }

@@ -36,15 +36,12 @@ public class VietQrController {
     @PostMapping("/generate-qr")
     public ResponseEntity<?> generateQr(@RequestBody InfoVietQrReq infoVietQrReq) {
 
-        try {
-            log.info("==================== Start generate qr code  ========================");
-            String response = vietQrService.generateQR(infoVietQrReq);
-            log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
-            log.info("==================== generate qr code  ========================" + response);
-            return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        log.info("==================== Start generate qr code  ========================");
+        String response = vietQrService.generateQR(infoVietQrReq);
+        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
+        log.info("==================== generate qr code  ========================" + response);
+        return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
+
     }
 
 }

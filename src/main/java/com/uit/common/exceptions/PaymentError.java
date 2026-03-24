@@ -1,32 +1,43 @@
 package com.uit.common.exceptions;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum PaymentError {
 
+    // ===== VIETQR ERROR =====
+    VIETQR_CALL_API_FAIL("FAIL","VQR1", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi call từ hệ thống VietQR"),
+    VIETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null"),
+    VIETQR_ACCESS_TOKEN_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Không có Access token từ hệ thống VietQR"),
+    VIETQR_GETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null khi gọi VietQR"),
+    VIETQR_GETQR_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Hệ thôńg không trả về QR Code");
+
     // ===== CLIENT ERROR =====
-    INVALID_REQUEST("FAIL","01", "400", "Dữ liệu request không hợp lệ"),
-    MISSING_FIELD("FAIL","02", "400", "Thiếu field bắt buộc"),
-    INVALID_AMOUNT("FAIL","03", "400", "Số tiền không hợp lệ"),
+//    INVALID_REQUEST("FAIL","01", HttpStatus.INTERNAL_SERVER_ERROR, "Dữ liệu request không hợp lệ"),
+//    MISSING_FIELD("FAIL","02", HttpStatus.INTERNAL_SERVER_ERROR, "Thiếu field bắt buộc"),
+//    INVALID_AMOUNT("FAIL","03", HttpStatus.INTERNAL_SERVER_ERROR, "Số tiền không hợp lệ"),
 
     // ===== AUTH ERROR =====
-    UNAUTHORIZED("FAIL","04", "401", "Sai username hoặc password"),
-    TOKEN_EXPIRED("FAIL","05", "401", "Token đã hết hạn"),
+//    UNAUTHORIZED("FAIL","04", HttpStatus.INTERNAL_SERVER_ERROR, "Sai username hoặc password"),
+//    TOKEN_EXPIRED("FAIL","05", HttpStatus.INTERNAL_SERVER_ERROR, "Token đã hết hạn"),
 
     // ===== VIETQR ERROR =====
-    VIETQR_ERROR("FAIL","06", "502", "Lỗi từ hệ thống VietQR"),
-    VIETQR_TIMEOUT("FAIL","07", "504", "Timeout khi gọi VietQR"),
+//    VIETQR_CALL_API_FAIL("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
+//    VIETQR_TIMEOUT("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Timeout khi gọi VietQR"),
+//    VIETQR_ERROR("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
+//    VIETQR_ERROR1("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
+//    VIETQR_ERROR2("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
 
     // ===== SYSTEM ERROR =====
-    INTERNAL_ERROR("FAIL","99", "500", "Lỗi hệ thống");
+//    INTERNAL_ERROR("FAIL","99", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống");
 
     private final String result;
     private final String errorCode;
-    private final String errorStatusCode;
+    private final HttpStatus errorStatusCode;
     private final String errorMessage;
 
-    PaymentError(String result, String errorCode, String errorStatusCode, String errorMessage) {
+    PaymentError(String result, String errorCode, HttpStatus errorStatusCode, String errorMessage) {
         this.result = result;
         this.errorCode = errorCode;
         this.errorStatusCode = errorStatusCode;
