@@ -56,10 +56,14 @@ springdoc:
 
 payment:
     vqr:
+      base-url : https://dev.vietqr.org
       username: customer-vietqrtest-bive
       password: Vietqrtestbive
     jwt:
       secret-key: 'my-secret-key-my-secret-key-my-secret-key'
       expiration: 3600000
+    client :
+      username: customer-bive-user26534
+      password: Y3VzdG9tZXItYml2ZS11c2VyMjY1MzQ=
 
 

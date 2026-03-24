@@ -55,4 +55,10 @@ public class JwtUtil {
         }
         return false;
     }
+
+    public String basicAuth(String username, String password) {
+        String auth = username + ":" + password;
+        String encoded = Base64.getEncoder().encodeToString(auth.getBytes());
+        return "Basic " + encoded;
+    }
 }

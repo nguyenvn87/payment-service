@@ -2,16 +2,14 @@ package com.uit.payment.controller;
 
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.TokenResponse;
-import com.uit.payment.VietQrService;
+import com.uit.payment.FeignClientVietQrService;
+import com.uit.payment.service.VietQrService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Slf4j
 @RestController
@@ -22,13 +20,11 @@ public class VietQrController {
     private VietQrService vietQrService;
 
     @PostMapping("/generate/token-qr")
-    public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> generateToken() {
 
         log.info("==================== Start generate token qr code  ========================");
         try {
-            String response = vietQrService.getTokenGenerateQR(authHeader, MediaType.APPLICATION_JSON_VALUE);
-            log.info("==================== generate token qr code  ========================" + authHeader);
-            log.info("==================== generate token qr code  ========================" + MediaType.APPLICATION_JSON_VALUE);
+            TokenResponse response = vietQrService.getTokenToCallQR();
             log.info("==================== generate token qr code  ========================" + response);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){

@@ -119,6 +119,7 @@ springdoc:
 
 payment:
   vqr:
+    base-url : https://api.vietqr.org
     username: customer-vietqrtest-bive
     password: Vietqrtestbive
   jwt:
