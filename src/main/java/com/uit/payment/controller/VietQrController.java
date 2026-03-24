@@ -42,7 +42,7 @@ public class VietQrController {
 
         try {
             log.info("==================== Start generate qr code  ========================");
-            String response = vietQrService.generateQR(authHeader, MediaType.APPLICATION_JSON_VALUE, infoVietQrReq);
+            String response = vietQrService.generateQR(authHeader, infoVietQrReq);
             log.info("==================== generate qr code  ========================" + authHeader);
             log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
             log.info("==================== generate qr code  ========================" + response);
