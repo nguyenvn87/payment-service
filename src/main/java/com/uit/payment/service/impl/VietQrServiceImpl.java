@@ -36,10 +36,8 @@ public class VietQrServiceImpl implements VietQrService {
         ResponseEntity<TokenResponse> response = feignClientVietQrService.getTokenGenerateQR(
                 jwtUtil.basicAuth(CLIENT_USERNAME,CLIENT_PASSWORD));
         log.info("Call to api get token VietQr : {}", response.getStatusCode());
-        if (response.getStatusCode().is2xxSuccessful()){
-            return response.getBody();
-        }
         return response.getBody();
+        
     }
 
     @Override
@@ -47,10 +45,8 @@ public class VietQrServiceImpl implements VietQrService {
 
         ResponseEntity<InfoVietQrRes> response = feignClientVietQrService.generateQR(authHeader, infoVietQrReq);
         log.info("Call to api get QR code : {}", response.getStatusCode());
-        if (response.getStatusCode().is2xxSuccessful()){
-            return Objects.requireNonNull(response.getBody()).qrLink();
-        }
-        return "";
+        return Objects.requireNonNull(response.getBody()).qrLink();
+
     }
 
 }

@@ -3,11 +3,13 @@ package com.uit.exception;
 import com.uit.common.constant.ErrorCode;
 import com.uit.common.exceptions.BusinessException;
 import com.uit.common.exceptions.HttpStatusResponse;
+import com.uit.common.exceptions.PaymentException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -56,6 +58,13 @@ public class ExceptionHandlerController {
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.status(BAD_REQUEST).body(new HttpStatusResponse(BAD_REQUEST.toString(), errors));
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ResponseEntity<?> handlePaymentExceptions(PaymentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new PaymentException(ex.getError(),ex.getErrorCode(),ex.getErrorStatusCode(),ex.getMessage()));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
