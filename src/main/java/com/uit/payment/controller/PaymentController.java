@@ -56,7 +56,7 @@ public class PaymentController {
             if (VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password)) {
                 String token = jwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
                 log.info("==================== valid successful ========================");
-                return ResponseEntity.ok(new PaymentSuccess(new TokenResponse(token, "Bearer", EXPIRATION_ACCESS_TOKEN)));
+                return ResponseEntity.ok(new TokenResponse(token, "Bearer", EXPIRATION_ACCESS_TOKEN));
             } else {
                 log.info("==================== Invalid username or password ========================");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -97,8 +97,8 @@ public class PaymentController {
             TransactionResponseObject transactionResponse = new TransactionResponseObject(refTransactionId);
 
             log.info("==================== validate token successful 2 ========================");
-            return ResponseEntity.ok(new PaymentSuccess(new SuccessResponse(false, null,
-                    "Transaction processed successfully", transactionResponse)));
+            return ResponseEntity.ok(new SuccessResponse(false, null,
+                    "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {
             // Trả về lỗi trong trường hợp có exception
             log.info("==================== TRANSACTION FAILED ========================");
