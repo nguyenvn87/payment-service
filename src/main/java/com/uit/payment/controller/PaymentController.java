@@ -94,9 +94,7 @@ public class PaymentController {
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(transactionCallback);
             log.info(json);
-
             paymentService.updateInformationPayment(transactionCallback);
-            // Trả về response 200 OK với thông tin giao dịch
             TransactionResponseObject transactionResponse = new TransactionResponseObject(transactionCallback.getTransactionid());
 
             return ResponseEntity.ok(new SuccessResponse(false, null,
