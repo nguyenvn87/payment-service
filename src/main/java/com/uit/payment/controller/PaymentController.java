@@ -1,72 +1,42 @@
 package com.uit.payment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uit.common.exceptions.PaymentSuccess;
-import com.uit.config.JwtUtil;
+import com.uit.config.CommonAuthUtils;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.dto.request.TransactionResponseObject;
 import com.uit.dto.response.ErrorResponse;
 import com.uit.dto.response.SuccessResponse;
 import com.uit.dto.response.TokenResponse;
+import com.uit.dto.response.ValidClientRes;
 import com.uit.payment.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.UUID;
-
-import static com.uit.config.JwtUtil.BASIC_PREFIX;
-import static com.uit.config.JwtUtil.BEARER_PREFIX;
 
 @Slf4j
 @RestController
 @RequestMapping("payment/v1")
 public class PaymentController {
 
-    @Value("${payment.vqr.username}")
-    private String VALID_USERNAME ;
-    @Value("${payment.vqr.password}")
-    private String VALID_PASSWORD;
-    @Value("${payment.jwt.expiration}")
-    private int EXPIRATION_ACCESS_TOKEN;
-
-    private final JwtUtil jwtUtil;
+    private final CommonAuthUtils commonAuthUtils;
     private final PaymentService paymentService;
 
-
-    public PaymentController(JwtUtil jwtUtil, PaymentService paymentService) {
-        this.jwtUtil = jwtUtil;
+    public PaymentController(CommonAuthUtils commonAuthUtils, PaymentService paymentService ) {
+        this.commonAuthUtils = commonAuthUtils;
         this.paymentService = paymentService;
     }
 
     @PostMapping("/api/token_generate")
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
         log.info("==================== Generating token ========================");
-        if (authHeader != null && authHeader.startsWith(BASIC_PREFIX)) {
-            String base64Credentials = authHeader.substring(BASIC_PREFIX.length()).trim();
-            String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
-            final String[] values = credentials.split(":", 2);
-            String username = values[0];
-            String password = values[1];
 
-            log.info("==================== VALID_USERNAME  ======================== : "+ VALID_USERNAME);
-            log.info("==================== VALID_PASSWORD  ======================== : "+ VALID_PASSWORD);
-            log.info("==================== username  ======================== : " + username);
-            log.info("==================== password  ======================== : " + password);
-
-            if (VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password)) {
-                String token = jwtUtil.generateToken(username); // Ở đây bạn cần tạo JWT token thực sự, ví dụ với jjwt.
-                log.info("==================== valid successful ========================");
-                return ResponseEntity.ok(new TokenResponse(token, "Bearer", EXPIRATION_ACCESS_TOKEN));
-            } else {
-                log.info("==================== Invalid username or password ========================");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-            }
+        ValidClientRes validClientRes = commonAuthUtils.validClientVietQr(authHeader);
+        if (validClientRes.isValid()) {
+            String token = commonAuthUtils.generateToken(validClientRes.getUsername());
+            log.info("==================== valid successful ========================");
+            return ResponseEntity.ok(new TokenResponse(token, "Bearer", validClientRes.getExpirationAccessToken()));
         } else {
             log.info("==================== Header not start with basic ========================");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing or invalid");
@@ -77,14 +47,7 @@ public class PaymentController {
     public ResponseEntity<?> transactionSync(@RequestBody TransactionCallback transactionCallback,
                                                   HttpServletRequest request) {
         log.info("==================== Transaction sync ========================");
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            return new ResponseEntity<>(new ErrorResponse(true, "INVALID_AUTH_HEADER",
-                    "Authorization header is missing or invalid", null), HttpStatus.UNAUTHORIZED);
-        }
-
-        String token = authHeader.substring(BEARER_PREFIX.length()).trim();
-        if (!jwtUtil.validateJwtToken(token)) {
+        if (!commonAuthUtils.validateJwtToken(request.getHeader("Authorization"))) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
@@ -94,7 +57,6 @@ public class PaymentController {
             log.info(json);
             paymentService.updateInformationPayment(transactionCallback);
             TransactionResponseObject transactionResponse = new TransactionResponseObject(transactionCallback.getTransactionid());
-
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {

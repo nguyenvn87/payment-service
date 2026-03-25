@@ -4,7 +4,7 @@ import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
-import com.uit.config.JwtUtil;
+import com.uit.config.CommonAuthUtils;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
-import static com.uit.config.JwtUtil.BEARER_PREFIX;
+import static com.uit.config.CommonAuthUtils.BEARER_PREFIX;
 
 @Slf4j
 @Service
@@ -41,19 +41,19 @@ public class VietQrServiceImpl implements VietQrService {
     private final String QR_TYPE = "0";
 
     private final FeignClientVietQrService feignClientVietQrService;
-    private final JwtUtil jwtUtil;
+    private final CommonAuthUtils commonAuthUtils;
     private final OrderRepository orderRepository;
 
-    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, JwtUtil jwtUtil, OrderRepository orderRepository) {
+    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository) {
         this.feignClientVietQrService = feignClientVietQrService;
-        this.jwtUtil = jwtUtil;
+        this.commonAuthUtils = commonAuthUtils;
         this.orderRepository = orderRepository;
     }
 
     @Override
     public TokenResponse getTokenToCallQR() {
 
-        String basicAuth = jwtUtil.basicAuth(CLIENT_USERNAME, CLIENT_PASSWORD);
+        String basicAuth = commonAuthUtils.basicAuth(CLIENT_USERNAME, CLIENT_PASSWORD);
 
         ResponseEntity<TokenResponse> response =
                 feignClientVietQrService.getTokenGenerateQR(basicAuth);
