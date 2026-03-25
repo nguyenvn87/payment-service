@@ -32,6 +32,8 @@ public class PaymentServiceImpl implements PaymentService {
             o.setPayStatus(PaymentStsEnums.PayCompleted);
             o.setPayedMoney(transactionCallback.getAmount());
             orderRepository.save(o);
+            log.info("=============== payment information updated successfully ====================");
         });
+
     }
 }
