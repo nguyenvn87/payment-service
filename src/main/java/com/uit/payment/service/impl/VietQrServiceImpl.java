@@ -127,6 +127,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
+                .serviceType(infoTransactionReq.getServiceType().name())
                 .build();
 
         orderRepository.save(order);

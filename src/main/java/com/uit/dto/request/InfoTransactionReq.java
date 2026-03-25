@@ -29,4 +29,6 @@ public class InfoTransactionReq {
 
     @NotNull(message = "ServiceType không được null")
     private ServiceTypeEnums serviceType;
+
+    private ServiceTypeEnums packageType;
 }

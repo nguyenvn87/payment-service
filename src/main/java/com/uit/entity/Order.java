@@ -2,6 +2,7 @@ package com.uit.entity;
 
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
+import com.uit.common.constant.ServiceTypeEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,6 +57,9 @@ public class Order {
 
     @Column(name = "REF_CODE", length = 10)
     private String ref;
+
+    @Column(name = "SERVICE_TYPE", length = 30)
+    private String serviceType;
 
     @OneToMany(mappedBy = "cart")
     private List<OrderDetail> details = new ArrayList<>();

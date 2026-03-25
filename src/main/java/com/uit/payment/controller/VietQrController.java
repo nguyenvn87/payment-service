@@ -1,5 +1,6 @@
 package com.uit.payment.controller;
 
+import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
@@ -38,6 +39,17 @@ public class VietQrController {
     public ResponseEntity<?> generateQr(@RequestBody InfoTransactionReq infoTransactionReq) {
 
         log.info("==================== Start generate qr code  ========================");
+        if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU)){
+            if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE1)) {
+                infoTransactionReq.setAmount(590000);
+            }
+            if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE2)) {
+                infoTransactionReq.setAmount(1690000);
+            }
+            if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE3)) {
+                infoTransactionReq.setAmount(2990000);
+            }
+        }
         String response = vietQrService.generateQR(infoTransactionReq);
 //        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
         log.info("==================== generate qr code  ========================" + response);
