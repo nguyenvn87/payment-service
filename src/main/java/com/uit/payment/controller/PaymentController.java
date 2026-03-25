@@ -85,32 +85,12 @@ public class PaymentController {
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
-
-        log.info("==================== validate with token ======================== : " + token);
         // Xác thực token
         if (!jwtUtil.validateJwtToken(token)) {
-            log.info("==================== validate token fail ========================");
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
-        log.info("==================== validate token successful 1 ========================");
-
         try {
-            // Xử lý nghiệp vụ, sinh mã refTransactionId (Giả sử tạo một mã ngẫu nhiên)
-
-            log.info("sync transaction info : " + transactionCallback.getTransactionid());
-            log.info("sync transaction info : " + transactionCallback.getTransactiontime());
-            log.info("sync transaction info : " + transactionCallback.getReferencenumber());
-            log.info("sync transaction info : " + transactionCallback.getAmount());
-            log.info("sync transaction info : " + transactionCallback.getContent());
-            log.info("sync transaction info : " + transactionCallback.getBankaccount());
-            log.info("sync transaction info : " + transactionCallback.getOrderId());
-            log.info("sync transaction info : " + transactionCallback.getSign());
-            log.info("sync transaction info : " + transactionCallback.getTerminalCode());
-            log.info("sync transaction info : " + transactionCallback.getUrlLink());
-            log.info("sync transaction info : " + transactionCallback.getServiceCode());
-            log.info("sync transaction info : " + transactionCallback.getSubTerminalCode());
-
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(transactionCallback);
             log.info(json);
@@ -119,7 +99,6 @@ public class PaymentController {
             // Trả về response 200 OK với thông tin giao dịch
             TransactionResponseObject transactionResponse = new TransactionResponseObject(transactionCallback.getTransactionid());
 
-            log.info("==================== validate token successful 2 ========================");
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {
