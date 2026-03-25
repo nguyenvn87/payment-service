@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
+import static com.uit.config.JwtUtil.BEARER_PREFIX;
+
 @Slf4j
 @Service
 public class VietQrServiceImpl implements VietQrService {
@@ -81,7 +83,6 @@ public class VietQrServiceImpl implements VietQrService {
     public QrCodeRes generateQR(InfoTransactionReq infoTransactionReq) {
 
         String oderId = UUID.randomUUID().toString();
-        log.info("=================== generateQR oderId 1 ================= " +oderId);
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -93,8 +94,6 @@ public class VietQrServiceImpl implements VietQrService {
                 .orderId(oderId)
                 .build();
 
-        log.info("=================== generateQR oderId 2 ================= " +infoVietQrReq.getOrderId());
-
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
 
@@ -103,7 +102,7 @@ public class VietQrServiceImpl implements VietQrService {
         log.info("===================================== " );
 
         ResponseEntity<InfoVietQrRes> response =
-                feignClientVietQrService.generateQR("Bearer " + accessToken, infoVietQrReq);
+                feignClientVietQrService.generateQR(BEARER_PREFIX + accessToken, infoVietQrReq);
 
         log.info("Call to api get QR code : {}", response.getStatusCode());
 

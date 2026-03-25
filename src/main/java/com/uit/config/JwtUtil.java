@@ -19,6 +19,9 @@ public class JwtUtil {
     @Value("${payment.jwt.expiration}")
     private int EXPIRATION_ACCESS_TOKEN;
 
+    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BASIC_PREFIX = "Basic ";
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }

@@ -11,10 +11,10 @@ public enum PaymentError {
     VIETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null"),
     VIETQR_ACCESS_TOKEN_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Không có Access token từ hệ thống VietQR"),
     VIETQR_GETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null khi gọi VietQR"),
-    VIETQR_GETQR_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Hệ thôńg không trả về QR Code");
+    VIETQR_GETQR_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Hệ thôńg không trả về QR Code"),
 
-    // ===== CLIENT ERROR =====
-//    INVALID_REQUEST("FAIL","01", HttpStatus.INTERNAL_SERVER_ERROR, "Dữ liệu request không hợp lệ"),
+//     ===== CLIENT ERROR =====
+    PAYMENT_ERROR_DURING_TRANSACTION("FAIL","CL2", HttpStatus.BAD_REQUEST, "Đã xảy ra lỗi trong quá trình giao dịch");
 //    MISSING_FIELD("FAIL","02", HttpStatus.INTERNAL_SERVER_ERROR, "Thiếu field bắt buộc"),
 //    INVALID_AMOUNT("FAIL","03", HttpStatus.INTERNAL_SERVER_ERROR, "Số tiền không hợp lệ"),
 

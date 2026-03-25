@@ -20,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
+import static com.uit.config.JwtUtil.BASIC_PREFIX;
+import static com.uit.config.JwtUtil.BEARER_PREFIX;
+
 @Slf4j
 @RestController
 @RequestMapping("payment/v1")
@@ -31,8 +34,6 @@ public class PaymentController {
     private String VALID_PASSWORD;
     @Value("${payment.jwt.expiration}")
     private int EXPIRATION_ACCESS_TOKEN;
-
-    private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtUtil jwtUtil;
     private final PaymentService paymentService;
@@ -46,8 +47,8 @@ public class PaymentController {
     @PostMapping("/api/token_generate")
     public ResponseEntity<?> generateToken(@RequestHeader("Authorization") String authHeader) {
         log.info("==================== Generating token ========================");
-        if (authHeader != null && authHeader.startsWith("Basic ")) {
-            String base64Credentials = authHeader.substring("Basic ".length()).trim();
+        if (authHeader != null && authHeader.startsWith(BASIC_PREFIX)) {
+            String base64Credentials = authHeader.substring(BASIC_PREFIX.length()).trim();
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             final String[] values = credentials.split(":", 2);
             String username = values[0];
