@@ -76,7 +76,6 @@ public class PaymentController {
     @PostMapping("/bank/api/transaction-sync")
     public ResponseEntity<?> transactionSync(@RequestBody TransactionCallback transactionCallback,
                                                   HttpServletRequest request) {
-        // Lấy token từ header Authorization
         log.info("==================== Transaction sync ========================");
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
@@ -85,7 +84,6 @@ public class PaymentController {
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length()).trim();
-        // Xác thực token
         if (!jwtUtil.validateJwtToken(token)) {
             return new ResponseEntity<>(new ErrorResponse(true, "INVALID_TOKEN",
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
@@ -100,8 +98,6 @@ public class PaymentController {
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
         } catch (Exception ex) {
-            // Trả về lỗi trong trường hợp có exception
-            log.info("==================== TRANSACTION FAILED ========================");
             return new ResponseEntity<>(new ErrorResponse(true, "TRANSACTION_FAILED", ex.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
     }
