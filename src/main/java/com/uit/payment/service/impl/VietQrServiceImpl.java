@@ -98,6 +98,10 @@ public class VietQrServiceImpl implements VietQrService {
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
 
+        log.info("===================================== " );
+        log.info(accessToken);
+        log.info("===================================== " );
+
         ResponseEntity<InfoVietQrRes> response =
                 feignClientVietQrService.generateQR("Bearer " + accessToken, infoVietQrReq);
 
