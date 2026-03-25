@@ -80,6 +80,7 @@ public class VietQrServiceImpl implements VietQrService {
     public String generateQR(InfoTransactionReq infoTransactionReq) {
 
         String oderId = UUID.randomUUID().toString();
+        log.info("=================== generateQR oderId 1 ================= " +oderId);
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -90,6 +91,8 @@ public class VietQrServiceImpl implements VietQrService {
                 .content(infoTransactionReq.getUserId())
                 .orderId(oderId)
                 .build();
+
+        log.info("=================== generateQR oderId 2 ================= " +infoVietQrReq.getOrderId());
 
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
@@ -127,7 +130,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
-                .serviceType(infoTransactionReq.getServiceType().name())
+                .serviceType(infoTransactionReq.getServiceType())
                 .build();
 
         orderRepository.save(order);

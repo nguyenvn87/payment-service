@@ -48,18 +48,21 @@ public class Order {
     @Column(name = "PAY_MONEY")
     private double payedMoney;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "PAY_STS", length = 18)
     private PaymentStsEnums payStatus;
 
     // Mua bằng tiền hoặc bằng điểm thưởng
+    @Enumerated(EnumType.STRING)
     @Column(name = "PURCHASE_TYPE", length = 10)
     private PurchaseTypeEnums purchaseType;
 
     @Column(name = "REF_CODE", length = 10)
     private String ref;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "SERVICE_TYPE", length = 30)
-    private String serviceType;
+    private ServiceTypeEnums serviceType;
 
     @OneToMany(mappedBy = "cart")
     private List<OrderDetail> details = new ArrayList<>();
