@@ -123,5 +123,8 @@ payment:
     username: customer-vietqrtest-bive
     password: Vietqrtestbive
   jwt:
-    secret-key: 'my-secret-key-my-secret-key-my-secret-key'
+    secret-key: 'Wm9Qd1h3d0xZb2NQd0R5ZkJ1Q1h5aGZ3Z2l4dFZ5QkR5eVJ3T1d3aG1zU2h3eUZ4c3p3b1lVbVh5Z0J2b3RzU2pQd1dXbQ=='
     expiration: 60000
+  client:
+    username: customer-bive-user26534
+    password: Y3VzdG9tZXItYml2ZS11c2VyMjY1MzQ=

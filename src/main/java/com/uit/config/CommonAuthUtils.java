@@ -41,7 +41,7 @@ public class CommonAuthUtils {
                 .setSubject(username)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + expirationTime))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
