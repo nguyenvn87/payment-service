@@ -27,7 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
 
-        Optional<Order> order = orderRepository.findById(UUID.fromString(transactionCallback.getOrderId()));
+        Optional<Order> order = orderRepository.findById(transactionCallback.getOrderId());
         order.ifPresent(o -> {
             o.setPayStatus(PaymentStsEnums.PayCompleted);
             o.setPayedMoney(transactionCallback.getAmount());

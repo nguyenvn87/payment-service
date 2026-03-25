@@ -1,5 +1,6 @@
 package com.uit.payment.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.config.JwtUtil;
 import com.uit.dto.request.TransactionCallback;
@@ -108,6 +109,10 @@ public class PaymentController {
             log.info("sync transaction info : " + transactionCallback.getUrlLink());
             log.info("sync transaction info : " + transactionCallback.getServiceCode());
             log.info("sync transaction info : " + transactionCallback.getSubTerminalCode());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(transactionCallback);
+            log.info(json);
 
             paymentService.updateInformationPayment(transactionCallback);
             // Trả về response 200 OK với thông tin giao dịch
