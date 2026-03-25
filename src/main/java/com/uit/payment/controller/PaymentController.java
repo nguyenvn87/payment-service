@@ -7,6 +7,7 @@ import com.uit.dto.request.TransactionResponseObject;
 import com.uit.dto.response.ErrorResponse;
 import com.uit.dto.response.SuccessResponse;
 import com.uit.dto.response.TokenResponse;
+import com.uit.payment.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +34,12 @@ public class PaymentController {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtUtil jwtUtil;
+    private final PaymentService paymentService;
 
-    public PaymentController(JwtUtil jwtUtil) {
+
+    public PaymentController(JwtUtil jwtUtil, PaymentService paymentService) {
         this.jwtUtil = jwtUtil;
+        this.paymentService = paymentService;
     }
 
     @PostMapping("/api/token_generate")
@@ -91,10 +95,23 @@ public class PaymentController {
 
         try {
             // Xử lý nghiệp vụ, sinh mã refTransactionId (Giả sử tạo một mã ngẫu nhiên)
-            String refTransactionId = String.valueOf(UUID.randomUUID()); // Sinh ID của giao dịch
 
+            log.info("sync transaction info : " + transactionCallback.getTransactionid());
+            log.info("sync transaction info : " + transactionCallback.getTransactiontime());
+            log.info("sync transaction info : " + transactionCallback.getReferencenumber());
+            log.info("sync transaction info : " + transactionCallback.getAmount());
+            log.info("sync transaction info : " + transactionCallback.getContent());
+            log.info("sync transaction info : " + transactionCallback.getBankaccount());
+            log.info("sync transaction info : " + transactionCallback.getOrderId());
+            log.info("sync transaction info : " + transactionCallback.getSign());
+            log.info("sync transaction info : " + transactionCallback.getTerminalCode());
+            log.info("sync transaction info : " + transactionCallback.getUrlLink());
+            log.info("sync transaction info : " + transactionCallback.getServiceCode());
+            log.info("sync transaction info : " + transactionCallback.getSubTerminalCode());
+
+            paymentService.updateInformationPayment(transactionCallback);
             // Trả về response 200 OK với thông tin giao dịch
-            TransactionResponseObject transactionResponse = new TransactionResponseObject(refTransactionId);
+            TransactionResponseObject transactionResponse = new TransactionResponseObject(transactionCallback.getTransactionid());
 
             log.info("==================== validate token successful 2 ========================");
             return ResponseEntity.ok(new SuccessResponse(false, null,
