@@ -1,17 +1,26 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.JwtUtil;
+import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
 import com.uit.dto.response.TokenResponse;
+import com.uit.entity.Order;
 import com.uit.payment.FeignClientVietQrService;
+import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.VietQrService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,12 +31,20 @@ public class VietQrServiceImpl implements VietQrService {
     @Value("${payment.client.password}")
     private String CLIENT_PASSWORD; ;
 
+    private final String BANK_ACCOUNT = "8883565290";
+    private final String BANK_CODE = "BIDV";
+    private final String USER_BANK_NAME = "NGUYEN VAN NGUYEN";
+    private final String TRANS_TYPE = "C";
+    private final String QR_TYPE = "0";
+
     private final FeignClientVietQrService feignClientVietQrService;
     private final JwtUtil jwtUtil;
+    private final OrderRepository orderRepository;
 
-    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, JwtUtil jwtUtil) {
+    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, JwtUtil jwtUtil, OrderRepository orderRepository) {
         this.feignClientVietQrService = feignClientVietQrService;
         this.jwtUtil = jwtUtil;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -60,7 +77,19 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
     @Override
-    public String generateQR(InfoVietQrReq infoVietQrReq) {
+    public String generateQR(InfoTransactionReq infoTransactionReq) {
+
+        String oderId = UUID.randomUUID().toString();
+        InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
+                .amount(infoTransactionReq.getAmount())
+                .bankAccount(BANK_ACCOUNT)
+                .bankCode(BANK_CODE)
+                .userBankName(USER_BANK_NAME)
+                .transType(TRANS_TYPE)
+                .qrType(QR_TYPE)
+                .content(infoTransactionReq.getUserId())
+                .orderId(oderId)
+                .build();
 
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
@@ -85,6 +114,22 @@ public class VietQrServiceImpl implements VietQrService {
         if (body.qrLink() == null || body.qrLink().isBlank()) {
             throw new PaymentException(PaymentError.VIETQR_GETQR_NULL);
         }
+
+        // ✅ Insert data to DB
+        Order order = Order.builder()
+                .orderId(oderId)
+                .billCode("MHD")
+                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .payStatus(PaymentStsEnums.Pending)
+                .payedMoney(0)
+                .phone(infoTransactionReq.getPhone())
+                .purchaseType(PurchaseTypeEnums.CASH)
+                .ref(infoTransactionReq.getRefCode())
+                .totalMoney(infoTransactionReq.getAmount())
+                .userId(infoTransactionReq.getUserId())
+                .build();
+
+        orderRepository.save(order);
 
         return body.qrLink();
     }

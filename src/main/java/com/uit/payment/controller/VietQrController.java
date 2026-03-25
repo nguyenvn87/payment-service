@@ -1,6 +1,7 @@
 package com.uit.payment.controller;
 
 import com.uit.common.exceptions.PaymentSuccess;
+import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.TokenResponse;
 import com.uit.payment.FeignClientVietQrService;
@@ -34,11 +35,11 @@ public class VietQrController {
 //    }
 
     @PostMapping("/generate-qr")
-    public ResponseEntity<?> generateQr(@RequestBody InfoVietQrReq infoVietQrReq) {
+    public ResponseEntity<?> generateQr(@RequestBody InfoTransactionReq infoTransactionReq) {
 
         log.info("==================== Start generate qr code  ========================");
-        String response = vietQrService.generateQR(infoVietQrReq);
-        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
+        String response = vietQrService.generateQR(infoTransactionReq);
+//        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
         log.info("==================== generate qr code  ========================" + response);
         return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
 

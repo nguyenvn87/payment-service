@@ -1,11 +1,13 @@
 package com.uit.dto.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class InfoVietQrReq {
 
-    private Long amount;
+    private double amount;
 
     private String content;
 
@@ -18,5 +20,7 @@ public class InfoVietQrReq {
     private String transType;
 
     private String qrType;
+
+    private String orderId;
 
 }

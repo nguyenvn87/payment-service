@@ -4,6 +4,7 @@ import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,14 +16,16 @@ import java.util.List;
 
 @Data
 @Entity
+@Builder
 @Table(name = "E_ORDER")
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
     @Column(name = "ORDER_ID", columnDefinition = "VARCHAR(36)")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String orderId;
 
     @Column(name = "BILL_CD",length = 36)
@@ -33,7 +36,7 @@ public class Order {
     private LocalDateTime createDate;
 
     @Column(name = "TOTAL_MONEY",length = 18)
-    private Number totalMoney;
+    private double totalMoney;
 
     @Column(name = "USER_ID", length = 18)
     private String userId;
@@ -41,8 +44,8 @@ public class Order {
     @Column(name = "PHONE", length = 18)
     private String phone;
 
-    @Column(name = "PAY_MONEY", length = 18)
-    private Number payedMoney;
+    @Column(name = "PAY_MONEY")
+    private double payedMoney;
 
     @Column(name = "PAY_STS", length = 18)
     private PaymentStsEnums payStatus;
