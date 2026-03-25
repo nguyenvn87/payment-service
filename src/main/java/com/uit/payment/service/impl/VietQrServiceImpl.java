@@ -8,6 +8,7 @@ import com.uit.config.JwtUtil;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
+import com.uit.dto.response.QrCodeRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
 import com.uit.payment.FeignClientVietQrService;
@@ -77,7 +78,7 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
     @Override
-    public String generateQR(InfoTransactionReq infoTransactionReq) {
+    public QrCodeRes generateQR(InfoTransactionReq infoTransactionReq) {
 
         String oderId = UUID.randomUUID().toString();
         log.info("=================== generateQR oderId 1 ================= " +oderId);
@@ -132,10 +133,9 @@ public class VietQrServiceImpl implements VietQrService {
                 .userId(infoTransactionReq.getUserId())
                 .serviceType(infoTransactionReq.getServiceType())
                 .build();
-
         orderRepository.save(order);
 
-        return body.qrLink();
+        return new QrCodeRes(body.qrLink(),body.content());
     }
 
 }

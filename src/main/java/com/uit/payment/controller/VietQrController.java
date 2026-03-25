@@ -4,6 +4,7 @@ import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
+import com.uit.dto.response.QrCodeRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.service.VietQrService;
@@ -50,7 +51,7 @@ public class VietQrController {
                 infoTransactionReq.setAmount(2990000);
             }
         }
-        String response = vietQrService.generateQR(infoTransactionReq);
+        QrCodeRes response = vietQrService.generateQR(infoTransactionReq);
 //        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
         log.info("==================== generate qr code  ========================" + response);
         return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
