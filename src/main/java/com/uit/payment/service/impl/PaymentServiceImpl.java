@@ -1,6 +1,8 @@
 package com.uit.payment.service.impl;
 
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.exceptions.PaymentError;
+import com.uit.common.exceptions.PaymentException;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.entity.Order;
 import com.uit.payment.repository.OrderRepository;
@@ -27,13 +29,14 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
 
-        Optional<Order> order = orderRepository.findById(transactionCallback.getOrderId());
-        order.ifPresent(o -> {
-            o.setPayStatus(PaymentStsEnums.PayCompleted);
-            o.setPayedMoney(transactionCallback.getAmount());
-            orderRepository.save(o);
-            log.info("=============== payment information updated successfully ====================");
-        });
+        Order order = orderRepository.findById(transactionCallback.getOrderId())
+                .orElseThrow(() -> new PaymentException(PaymentError.NOT_HAVE_TRANSACTION_PAYMENT));
+
+        order.setPayStatus(PaymentStsEnums.PayCompleted);
+        order.setPayedMoney(transactionCallback.getAmount());
+        orderRepository.save(order);
+
+        log.info("=============== payment information updated successfully ====================");
 
     }
 }

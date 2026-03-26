@@ -1,5 +1,6 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.JsonUtil;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.exceptions.PaymentError;
@@ -93,6 +94,8 @@ public class VietQrServiceImpl implements VietQrService {
                 .content(infoTransactionReq.getUserId())
                 .orderId(oderId)
                 .build();
+        log.info("============= InfoTransactionReq =================");
+        log.info(JsonUtil.toJson(infoVietQrReq));
 
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
@@ -137,6 +140,8 @@ public class VietQrServiceImpl implements VietQrService {
                 .serviceType(infoTransactionReq.getServiceType())
                 .build();
         orderRepository.save(order);
+        log.info("============= Order =================");
+        log.info(JsonUtil.toJson(order));
 
         return new QrCodeRes(body.qrLink(),body.content());
     }

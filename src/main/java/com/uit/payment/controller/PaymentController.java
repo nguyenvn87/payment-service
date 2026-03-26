@@ -1,6 +1,8 @@
 package com.uit.payment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uit.common.JsonUtil;
+import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CommonAuthUtils;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.dto.request.TransactionResponseObject;
@@ -52,16 +54,17 @@ public class PaymentController {
                     "Invalid or expired token", null), HttpStatus.UNAUTHORIZED);
         }
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(transactionCallback);
-            log.info(json);
+            log.info(JsonUtil.toJson(transactionCallback));
             paymentService.updateInformationPayment(transactionCallback);
             TransactionResponseObject transactionResponse = new TransactionResponseObject(transactionCallback.getTransactionid());
             return ResponseEntity.ok(new SuccessResponse(false, null,
                     "Transaction processed successfully", transactionResponse));
+        } catch (PaymentException ex) {
+            return new ResponseEntity<>(new ErrorResponse(true, "TRANSACTION_FAILED", ex.getErrorMessage(), null), ex.getErrorStatusCode());
         } catch (Exception ex) {
             return new ResponseEntity<>(new ErrorResponse(true, "TRANSACTION_FAILED", ex.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.uit.payment.controller;
 
+import com.uit.common.JsonUtil;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.dto.request.InfoTransactionReq;
@@ -8,6 +9,7 @@ import com.uit.dto.response.QrCodeRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.service.VietQrService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,9 +39,10 @@ public class VietQrController {
 //    }
 
     @PostMapping("/generate-qr")
-    public ResponseEntity<?> generateQr(@RequestBody InfoTransactionReq infoTransactionReq) {
+    public ResponseEntity<?> generateQr(@Valid @RequestBody InfoTransactionReq infoTransactionReq) {
 
         log.info("==================== Start generate qr code  ========================");
+        log.info(JsonUtil.toJson(infoTransactionReq));
         if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU)){
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE1)) {
                 infoTransactionReq.setAmount(590000);
@@ -52,8 +55,7 @@ public class VietQrController {
             }
         }
         QrCodeRes response = vietQrService.generateQR(infoTransactionReq);
-//        log.info("==================== generate qr code  ========================" + infoVietQrReq.toString());
-        log.info("==================== generate qr code  ========================" + response);
+        log.info("==================== generate qr code  ========================" + JsonUtil.toJson(response));
         return new ResponseEntity<>(new PaymentSuccess(response), HttpStatus.OK);
 
     }
