@@ -37,6 +37,8 @@ public class ExceptionHandlerController {
     @ExceptionHandler(PaymentException.class)
     public ResponseEntity<ErrorPaymentResponse> handlePaymentExceptions(PaymentException ex) {
 
+
+        //TODO den nua se bo error message ra khoi data tra ve . chi tra ve ma loi
         ErrorPaymentResponse errorResponse = new ErrorPaymentResponse(
                 ex.getError(),
                 ex.getErrorCode(),

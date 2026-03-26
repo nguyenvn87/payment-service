@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum PaymentError {
 
     // ===== VIETQR ERROR =====
-    VIETQR_CALL_API_FAIL("FAIL","VQR1", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi call từ hệ thống VietQR"),
+    VIETQR_CALL_API_FAIL("FAIL","VQR1", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi call tới hệ thống VietQR"),
     VIETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null"),
     VIETQR_ACCESS_TOKEN_NULL("FAIL","VQR3", HttpStatus.INTERNAL_SERVER_ERROR, "Không có Access token từ hệ thống VietQR"),
     VIETQR_GETQR_RESPONSE_BODY_NULL("FAIL","VQR2", HttpStatus.INTERNAL_SERVER_ERROR, "Data trả về từ hệ thông bị null khi gọi VietQR"),

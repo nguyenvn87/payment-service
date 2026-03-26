@@ -111,7 +111,7 @@ public class VietQrServiceImpl implements VietQrService {
 
         // ✅ Check HTTP status
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new PaymentException(PaymentError.VIETQR_ACCESS_TOKEN_NULL);
+            throw new PaymentException(PaymentError.VIETQR_CALL_API_FAIL);
         }
 
         // ✅ Check body null
