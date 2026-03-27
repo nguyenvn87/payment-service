@@ -1,11 +1,13 @@
 package com.uit.payment.service.impl;
 
 import com.uit.common.JsonUtil;
+import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CommonAuthUtils;
+import com.uit.config.CompactEncoder;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
@@ -83,6 +85,7 @@ public class VietQrServiceImpl implements VietQrService {
     @Override
     public QrCodeRes generateQR(InfoTransactionReq infoTransactionReq) {
 
+        LocalDateTime time = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         String oderId = UUID.randomUUID().toString();
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
@@ -92,7 +95,12 @@ public class VietQrServiceImpl implements VietQrService {
                 .transType(TRANS_TYPE)
                 .qrType(QR_TYPE)
                 .content(infoTransactionReq.getUserId())
-                .orderId(oderId)
+                .orderId(CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time)))
+                .sign("dummy")
+                .terminalCode("dummy")
+                .urlLink("dummy")
+                .serviceCode("dummy")
+                .subTerminalCode("dummy")
                 .build();
         log.info("============= InfoTransactionReq =================");
         log.info(JsonUtil.toJson(infoVietQrReq));
@@ -129,7 +137,7 @@ public class VietQrServiceImpl implements VietQrService {
         Order order = Order.builder()
                 .orderId(oderId)
                 .billCode("MHD")
-                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .createDate(time)
                 .payStatus(PaymentStsEnums.Pending)
                 .payedMoney(0)
                 .phone(infoTransactionReq.getPhone())
@@ -138,10 +146,11 @@ public class VietQrServiceImpl implements VietQrService {
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
                 .serviceType(infoTransactionReq.getServiceType())
+                .flag("NORMAL")
                 .build();
         orderRepository.save(order);
         log.info("============= Order =================");
-        log.info(JsonUtil.toJson(order));
+//        log.info(JsonUtil.toJson(order));
 
         return new QrCodeRes(body.qrLink(),body.content());
     }

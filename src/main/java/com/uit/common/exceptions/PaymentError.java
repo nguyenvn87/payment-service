@@ -15,13 +15,14 @@ public enum PaymentError {
 
 //     ===== CLIENT ERROR =====
     PAYMENT_ERROR_DURING_TRANSACTION("FAIL","CL2", HttpStatus.BAD_REQUEST, "Đã xảy ra lỗi trong quá trình giao dịch"),
-    NOT_HAVE_TRANSACTION_PAYMENT("FAIL","CL3", HttpStatus.BAD_REQUEST, "Đã xảy ra lỗi trong quá trình giao dịch");
+    NOT_HAVE_TRANSACTION_PAYMENT("FAIL","CL3", HttpStatus.BAD_REQUEST, "Đã xảy ra lỗi trong quá trình giao dịch"),
 //    MISSING_FIELD("FAIL","02", HttpStatus.INTERNAL_SERVER_ERROR, "Thiếu field bắt buộc"),
 //    INVALID_AMOUNT("FAIL","03", HttpStatus.INTERNAL_SERVER_ERROR, "Số tiền không hợp lệ"),
 
-    // ===== AUTH ERROR =====
-//    UNAUTHORIZED("FAIL","04", HttpStatus.INTERNAL_SERVER_ERROR, "Sai username hoặc password"),
-//    TOKEN_EXPIRED("FAIL","05", HttpStatus.INTERNAL_SERVER_ERROR, "Token đã hết hạn"),
+    // ===== ENCRYPT ERROR =====
+    ENCODE_DATA_FAIL ("FAIL","EE1", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình mã hóa"),
+    DECODE_DATA_FAIL ("FAIL","EE2", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã"),
+    WRONG_DATA_TRANSACTION ("FAIL","EE3", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã");
 
     // ===== VIETQR ERROR =====
 //    VIETQR_CALL_API_FAIL("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),

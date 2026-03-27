@@ -48,6 +48,9 @@ public class Order {
     @Column(name = "PAY_MONEY")
     private double payedMoney;
 
+    @Column(name = "FLAG", length = 18)
+    private String flag;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "PAY_STS", length = 18)
     private PaymentStsEnums payStatus;

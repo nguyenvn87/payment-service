@@ -23,4 +23,11 @@ public class InfoVietQrReq {
 
     private String orderId;
 
+    //optional
+    private String sign;
+    private String terminalCode;
+    private String urlLink;
+    private String serviceCode;
+    private String subTerminalCode;
+
 }

@@ -1,12 +1,16 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.JsonUtil;
+import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
+import com.uit.config.CompactEncoder;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.entity.Order;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.PaymentService;
+import com.uit.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,9 +32,21 @@ public class PaymentServiceImpl implements PaymentService {
     public void updateInformationPayment(TransactionCallback transactionCallback) {
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
+        CompactEncoder.DecodedData data = CompactEncoder.decode(transactionCallback.getOrderId());
+        log.info(JsonUtil.toJson(data));
+        log.info(data.uuid().toString());
+        log.info(data.extraData() + "");
 
-        Order order = orderRepository.findById(transactionCallback.getOrderId())
+        Order order = orderRepository.findById(data.uuid().toString())
                 .orElseThrow(() -> new PaymentException(PaymentError.NOT_HAVE_TRANSACTION_PAYMENT));
+
+        if (TimeUtils.getCurrentTime(order.getCreateDate()) == data.extraData()) {
+            throw new PaymentException(PaymentError.WRONG_DATA_TRANSACTION);
+        }
+
+        if (order.getTotalMoney() != transactionCallback.getAmount()){
+            order.setFlag("WARNING");
+        }
 
         order.setPayStatus(PaymentStsEnums.PayCompleted);
         order.setPayedMoney(transactionCallback.getAmount());
