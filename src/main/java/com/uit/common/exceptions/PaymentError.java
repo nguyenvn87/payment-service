@@ -22,10 +22,10 @@ public enum PaymentError {
     // ===== ENCRYPT ERROR =====
     ENCODE_DATA_FAIL ("FAIL","EE1", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình mã hóa"),
     DECODE_DATA_FAIL ("FAIL","EE2", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã"),
-    WRONG_DATA_TRANSACTION ("FAIL","EE3", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã");
+    WRONG_DATA_TRANSACTION ("FAIL","EE3", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã"),
 
-    // ===== VIETQR ERROR =====
-//    VIETQR_CALL_API_FAIL("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
+    // ===== VALID DATA =====
+    WRONG_FAIL_SINGER_KEY("FAIL","SIG", HttpStatus.BAD_REQUEST, "sai chữ kí");
 //    VIETQR_TIMEOUT("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Timeout khi gọi VietQR"),
 //    VIETQR_ERROR("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
 //    VIETQR_ERROR1("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),

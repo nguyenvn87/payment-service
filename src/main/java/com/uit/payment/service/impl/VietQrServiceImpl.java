@@ -1,5 +1,6 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.HmacUtil;
 import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
@@ -36,6 +37,8 @@ public class VietQrServiceImpl implements VietQrService {
     private String CLIENT_USERNAME;
     @Value("${payment.client.password}")
     private String CLIENT_PASSWORD; ;
+    @Value("${payment.signature}")
+    private String SIGNER_KEY; ;
 
     private final String BANK_ACCOUNT = "8883565290";
     private final String BANK_CODE = "BIDV";
@@ -87,6 +90,9 @@ public class VietQrServiceImpl implements VietQrService {
 
         LocalDateTime time = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         String oderId = UUID.randomUUID().toString();
+        String oderIdEncode = CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time));
+        //TODO áp dụng khi có chữ kí trả ve
+//        String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -95,8 +101,10 @@ public class VietQrServiceImpl implements VietQrService {
                 .transType(TRANS_TYPE)
                 .qrType(QR_TYPE)
                 .content(infoTransactionReq.getUserId())
-                .orderId(CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time)))
+                .orderId(oderIdEncode)
                 .sign("dummy")
+                //TODO áp dụng khi có chữ kí trả ve
+//                .sign(sign)
                 .terminalCode("dummy")
                 .urlLink("dummy")
                 .serviceCode("dummy")

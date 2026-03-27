@@ -37,19 +37,20 @@ public class CompactEncoder {
      * Decode string về UUID + extra data
      */
     public static DecodedData decode(String encoded) {
-        byte[] bytes = DECODER.decode(encoded);
+        try {
+            byte[] bytes = DECODER.decode(encoded);
+            if (bytes.length != 24) {
+                throw new PaymentException(PaymentError.DECODE_DATA_FAIL);
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            long most = buffer.getLong();
+            long least = buffer.getLong();
+            long extra = buffer.getLong();
 
-        if (bytes.length != 24) {
+            return new DecodedData(new UUID(most, least), extra);
+        } catch (Exception e) {
             throw new PaymentException(PaymentError.DECODE_DATA_FAIL);
         }
-
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-
-        long most = buffer.getLong();
-        long least = buffer.getLong();
-        long extra = buffer.getLong();
-
-        return new DecodedData(new UUID(most, least), extra);
     }
 
     /**

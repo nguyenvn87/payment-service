@@ -1,5 +1,6 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.HmacUtil;
 import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
@@ -13,6 +14,7 @@ import com.uit.payment.service.PaymentService;
 import com.uit.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,6 +22,9 @@ import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+
+    @Value("${payment.signature}")
+    private String SIGNER_KEY; ;
 
     private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private final OrderRepository orderRepository;
@@ -30,6 +35,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void updateInformationPayment(TransactionCallback transactionCallback) {
+
+        //TODO áp dụng khi có chữ kí trả ve
+//        if(!HmacUtil.verify(transactionCallback.getOrderId(),SIGNER_KEY,transactionCallback.getSign())){
+//            throw new PaymentException(PaymentError.WRONG_FAIL_SINGER_KEY);
+//        }
+
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
         CompactEncoder.DecodedData data = CompactEncoder.decode(transactionCallback.getOrderId());

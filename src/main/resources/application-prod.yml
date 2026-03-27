@@ -128,3 +128,4 @@ payment:
   client:
     username: customer-bive-user26534
     password: Y3VzdG9tZXItYml2ZS11c2VyMjY1MzQ=
+  signature: my-signature
