@@ -33,22 +33,28 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
         CompactEncoder.DecodedData data = CompactEncoder.decode(transactionCallback.getOrderId());
-        log.info(JsonUtil.toJson(data));
         log.info(data.uuid().toString());
         log.info(data.extraData() + "");
 
+        log.info("=============== updateInformationPayment ====================== " + transactionCallback.getOrderId());
         Order order = orderRepository.findById(data.uuid().toString())
                 .orElseThrow(() -> new PaymentException(PaymentError.NOT_HAVE_TRANSACTION_PAYMENT));
 
-        if (TimeUtils.getCurrentTime(order.getCreateDate()) == data.extraData()) {
+        log.info("=============== updateInformationPayment ====================== " + TimeUtils.getCurrentTime(order.getCreateDate()));
+        log.info("=============== updateInformationPayment ====================== " + data.extraData());
+        if (TimeUtils.getCurrentTime(order.getCreateDate()) != data.extraData()) {
             throw new PaymentException(PaymentError.WRONG_DATA_TRANSACTION);
         }
 
+        log.info("=============== updateInformationPayment ====================== " + order.getTotalMoney());
+        log.info("=============== updateInformationPayment ====================== " + transactionCallback.getAmount());
         if (order.getTotalMoney() != transactionCallback.getAmount()){
             order.setFlag("WARNING");
         }
 
+        log.info("=============== updateInformationPayment ====================== " + PaymentStsEnums.PayCompleted.name());
         order.setPayStatus(PaymentStsEnums.PayCompleted);
+        log.info("=============== updateInformationPayment ====================== " + transactionCallback.getAmount());
         order.setPayedMoney(transactionCallback.getAmount());
         orderRepository.save(order);
 

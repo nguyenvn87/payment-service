@@ -32,7 +32,7 @@ public class Order {
     @Column(name = "BILL_CD",length = 36)
     private String billCode;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(name = "CREATE_DATE", updatable = false)
     private LocalDateTime createDate;
 

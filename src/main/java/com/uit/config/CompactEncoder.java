@@ -47,7 +47,7 @@ public class CompactEncoder {
 
         long most = buffer.getLong();
         long least = buffer.getLong();
-        int extra = buffer.getInt();
+        long extra = buffer.getLong();
 
         return new DecodedData(new UUID(most, least), extra);
     }
@@ -55,5 +55,5 @@ public class CompactEncoder {
     /**
      * DTO chứa dữ liệu sau khi decode
      */
-    public record DecodedData(UUID uuid, int extraData) {}
+    public record DecodedData(UUID uuid, long extraData) {}
 }
