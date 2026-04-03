@@ -1,6 +1,18 @@
 app:
   swagger:
     plugin: true
+  cors:
+    allowed-origins:
+      - https://prod.d1vcb1w1b7j9n0.amplifyapp.com
+      - http://localhost:4200
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - "*"
 server:
   port: 8890
 spring:

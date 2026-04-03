@@ -1,5 +1,6 @@
 package com.uit.config;
 
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,22 +36,55 @@ public class SecurityConfig {
 			"/v3/api-docs/**",
 	};
 
+	@Autowired
+	CorsProperties corsProperties;
 
-	 @Bean
-	 SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		 http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
-				 .authorizeHttpRequests((requests) -> requests
-						 .requestMatchers(PERMITTED_URL).permitAll()
-						 .anyRequest().permitAll()
-				 );
-//				 .oauth2ResourceServer(oauth2 -> oauth2
-//						 .jwt(jwt -> jwt
-//								 .jwtAuthenticationConverter(jwtAuthenticationConverter())
-//						 )
+
+//	 @Bean
+//	 SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//		 http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
+//				 .authorizeHttpRequests((requests) -> requests
+//						 .requestMatchers(PERMITTED_URL).permitAll()
+//						 .anyRequest().permitAll()
 //				 );
+////				 .oauth2ResourceServer(oauth2 -> oauth2
+////						 .jwt(jwt -> jwt
+////								 .jwtAuthenticationConverter(jwtAuthenticationConverter())
+////						 )
+////				 );
+//
+//		 return http.build();
+//	 }
 
-		 return http.build();
-	 }
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		http
+				.cors(Customizer.withDefaults())
+				.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests((requests) -> requests
+						.requestMatchers(PERMITTED_URL).permitAll()
+						.anyRequest().permitAll()
+				);
+
+		return http.build();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource(CorsProperties corsProps) {
+		CorsConfiguration config = new CorsConfiguration();
+
+		config.setAllowedOrigins(corsProps.getAllowedOrigins());
+		config.setAllowedMethods(corsProps.getAllowedMethods());
+		config.setAllowedHeaders(corsProps.getAllowedHeaders());
+
+		config.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+
+		return source;
+	}
 
 	 private JwtAuthenticationConverter jwtAuthenticationConverter() {
 	        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
