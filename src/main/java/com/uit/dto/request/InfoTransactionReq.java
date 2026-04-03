@@ -20,8 +20,8 @@ public class InfoTransactionReq {
     @NotBlank(message = "Phone không được để trống")
     private String phone;
 
-    @NotBlank(message = "RefCode không được để trống")
-    @Size(max = 50, message = "RefCode tối đa 50 ký tự")
+//    @NotBlank(message = "RefCode không được để trống")
+//    @Size(max = 50, message = "RefCode tối đa 50 ký tự")
     private String refCode;
 
     @NotBlank(message = "UserId không được để trống")
