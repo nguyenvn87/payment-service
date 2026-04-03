@@ -91,8 +91,8 @@ public class VietQrServiceImpl implements VietQrService {
         LocalDateTime time = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         String oderId = UUID.randomUUID().toString();
         String oderIdEncode = CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time));
-        //TODO áp dụng khi có chữ kí trả ve
-//        String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
+        //DONE áp dụng khi có chữ kí trả ve
+        String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -102,13 +102,13 @@ public class VietQrServiceImpl implements VietQrService {
                 .qrType(QR_TYPE)
                 .content(infoTransactionReq.getUserId())
                 .orderId(oderIdEncode)
-                .sign("dummy")
-                //TODO áp dụng khi có chữ kí trả ve
-//                .sign(sign)
-                .terminalCode("dummy")
-                .urlLink("dummy")
-                .serviceCode("dummy")
-                .subTerminalCode("dummy")
+//                .sign("dummy")
+                //DONE áp dụng khi có chữ kí trả ve
+                .sign(sign)
+                .terminalCode("dummy1")
+                .urlLink("dummy2")
+                .serviceCode("dummy3")
+                .subTerminalCode("dummy4")
                 .build();
         log.info("============= InfoTransactionReq =================");
         log.info(JsonUtil.toJson(infoVietQrReq));

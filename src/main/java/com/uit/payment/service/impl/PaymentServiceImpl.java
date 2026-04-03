@@ -36,10 +36,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void updateInformationPayment(TransactionCallback transactionCallback) {
 
-        //TODO áp dụng khi có chữ kí trả ve
-//        if(!HmacUtil.verify(transactionCallback.getOrderId(),SIGNER_KEY,transactionCallback.getSign())){
-//            throw new PaymentException(PaymentError.WRONG_FAIL_SINGER_KEY);
-//        }
+        //DONE áp dụng khi có chữ kí trả ve
+        if(!HmacUtil.verify(transactionCallback.getOrderId(),SIGNER_KEY,transactionCallback.getSign())){
+            throw new PaymentException(PaymentError.WRONG_FAIL_SINGER_KEY);
+        }
 
         log.info("=============== update payment information ======================");
         log.info("=============== Transaction Id ====================== " + transactionCallback.getOrderId());
