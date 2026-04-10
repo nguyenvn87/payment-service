@@ -5,6 +5,7 @@ app:
     allowed-origins:
       - https://prod.d1vcb1w1b7j9n0.amplifyapp.com
       - http://localhost:4200
+      - https://bive.net.vn
     allowed-methods:
       - GET
       - POST
