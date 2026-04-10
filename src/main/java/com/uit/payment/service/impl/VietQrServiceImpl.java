@@ -105,7 +105,7 @@ public class VietQrServiceImpl implements VietQrService {
 //                .sign("dummy")
                 //DONE áp dụng khi có chữ kí trả ve
                 .sign(sign)
-                .terminalCode("dummy1")
+                .terminalCode(infoTransactionReq.getServiceType().name())
                 .urlLink("dummy2")
                 .serviceCode("dummy3")
                 .subTerminalCode("dummy4")
