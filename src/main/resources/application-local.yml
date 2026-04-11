@@ -53,7 +53,9 @@ springdoc:
     tryItOutEnabled: false
     syntaxHighlight:
       activated: true
-
+server:
+  client:
+    url: http://localhost:8082
 payment:
     vqr:
       base-url : https://dev.vietqr.org

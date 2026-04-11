@@ -5,16 +5,19 @@ import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
+import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CommonAuthUtils;
 import com.uit.config.CompactEncoder;
+import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.InfoVietQrRes;
 import com.uit.dto.response.QrCodeRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
+import com.uit.payment.FeignClientSyncDataService;
 import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.VietQrService;
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -47,11 +51,13 @@ public class VietQrServiceImpl implements VietQrService {
     private final String QR_TYPE = "0";
 
     private final FeignClientVietQrService feignClientVietQrService;
+    private final FeignClientSyncDataService feignClientSyncDataService;
     private final CommonAuthUtils commonAuthUtils;
     private final OrderRepository orderRepository;
 
-    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository) {
+    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, FeignClientSyncDataService feignClientSyncDataService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository) {
         this.feignClientVietQrService = feignClientVietQrService;
+        this.feignClientSyncDataService = feignClientSyncDataService;
         this.commonAuthUtils = commonAuthUtils;
         this.orderRepository = orderRepository;
     }
@@ -86,6 +92,7 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
     @Override
+    @Transactional
     public QrCodeRes generateQR(InfoTransactionReq infoTransactionReq) {
 
         LocalDateTime time = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -159,6 +166,15 @@ public class VietQrServiceImpl implements VietQrService {
         orderRepository.save(order);
         log.info("============= Order =================");
 //        log.info(JsonUtil.toJson(order));
+
+        if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU))
+        {
+            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+                    .userId(infoTransactionReq.getUserId())
+                    .pac(infoTransactionReq.getPackageType().name())
+                    .price(infoTransactionReq.getAmount()).build();
+            feignClientSyncDataService.syneDataToService(dataSyncBankReq);
+        }
 
         return new QrCodeRes(body.qrLink(),body.content());
     }
