@@ -4,11 +4,14 @@ import com.uit.common.HmacUtil;
 import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CompactEncoder;
+import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.entity.Order;
+import com.uit.payment.FeignClientSyncDataService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.PaymentService;
 import com.uit.utils.JsonUtils;
@@ -27,10 +30,14 @@ public class PaymentServiceImpl implements PaymentService {
     private String SIGNER_KEY; ;
 
     private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
-    private final OrderRepository orderRepository;
 
-    public PaymentServiceImpl(OrderRepository orderRepository) {
+    private final OrderRepository orderRepository;
+    private final FeignClientSyncDataService feignClientSyncDataService;
+
+
+    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientSyncDataService feignClientSyncDataService) {
         this.orderRepository = orderRepository;
+        this.feignClientSyncDataService = feignClientSyncDataService;
     }
 
     @Override
@@ -70,6 +77,14 @@ public class PaymentServiceImpl implements PaymentService {
         orderRepository.save(order);
 
         log.info("=============== payment information updated successfully ====================");
+
+        if (transactionCallback.getTerminalCode().equals(ServiceTypeEnums.BIVEEDU.name())){
+
+            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+                    .userId(transactionCallback.getSubTerminalCode())
+                    .price(transactionCallback.getAmount()).build();
+            feignClientSyncDataService.syneDataToService(dataSyncBankReq);
+        }
 
     }
 }

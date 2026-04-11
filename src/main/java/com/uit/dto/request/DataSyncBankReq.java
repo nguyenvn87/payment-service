@@ -8,6 +8,5 @@ import lombok.Data;
 public class DataSyncBankReq {
 
     private String userId;
-    private String pac;
     private double price;
 }

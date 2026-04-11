@@ -100,6 +100,7 @@ public class VietQrServiceImpl implements VietQrService {
         String oderIdEncode = CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time));
         //DONE áp dụng khi có chữ kí trả ve
         String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
+        log.info("===================================== oderIdEncode  " + oderIdEncode );
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -115,7 +116,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .terminalCode(infoTransactionReq.getServiceType().name())
                 .urlLink("dummy2")
                 .serviceCode("dummy3")
-                .subTerminalCode("dummy4")
+                .subTerminalCode(infoTransactionReq.getUserId())
                 .build();
         log.info("============= InfoTransactionReq =================");
         log.info(JsonUtil.toJson(infoVietQrReq));
@@ -166,15 +167,6 @@ public class VietQrServiceImpl implements VietQrService {
         orderRepository.save(order);
         log.info("============= Order =================");
 //        log.info(JsonUtil.toJson(order));
-
-        if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU))
-        {
-            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
-                    .userId(infoTransactionReq.getUserId())
-                    .pac(infoTransactionReq.getPackageType().name())
-                    .price(infoTransactionReq.getAmount()).build();
-            feignClientSyncDataService.syneDataToService(dataSyncBankReq);
-        }
 
         return new QrCodeRes(body.qrLink(),body.content());
     }
