@@ -10,6 +10,7 @@ import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CompactEncoder;
 import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.TransactionCallback;
+import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
 import com.uit.payment.FeignClientSyncDataService;
 import com.uit.payment.repository.OrderRepository;
@@ -18,6 +19,7 @@ import com.uit.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -83,7 +85,10 @@ public class PaymentServiceImpl implements PaymentService {
             DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
                     .userId(transactionCallback.getSubTerminalCode())
                     .price(transactionCallback.getAmount()).build();
-            feignClientSyncDataService.syneDataToService(dataSyncBankReq);
+            ResponseEntity<TokenResponse> response = feignClientSyncDataService.syneDataToService(dataSyncBankReq);
+            log.info("=============== Sync data to service ====================");
+            log.info("Sync data for user : {} with amount : {} ", transactionCallback.getSubTerminalCode(), transactionCallback.getAmount());
+            log.info("Response with status : {} ", response.getStatusCode());
         }
 
     }
