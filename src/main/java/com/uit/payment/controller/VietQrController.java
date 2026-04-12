@@ -45,16 +45,16 @@ public class VietQrController {
         log.info(JsonUtil.toJson(infoTransactionReq));
         if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU)){
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE1)) {
-//                infoTransactionReq.setAmount(590000);
-                infoTransactionReq.setAmount(5000);
+                infoTransactionReq.setAmount(590000);
+//                infoTransactionReq.setAmount(5000);
             }
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE2)) {
-//                infoTransactionReq.setAmount(1690000);
-                infoTransactionReq.setAmount(6000);
+                infoTransactionReq.setAmount(1690000);
+//                infoTransactionReq.setAmount(6000);
             }
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE3)) {
-//                infoTransactionReq.setAmount(2990000);
-                infoTransactionReq.setAmount(7000);
+                infoTransactionReq.setAmount(2990000);
+//                infoTransactionReq.setAmount(7000);
             }
         }
         QrCodeRes response = vietQrService.generateQR(infoTransactionReq);
