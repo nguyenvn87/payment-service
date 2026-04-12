@@ -116,9 +116,14 @@ springdoc:
     tryItOutEnabled: false
     syntaxHighlight:
       activated: true
+
 server:
   client:
-    url: https://api.bevi.click
+    bive:
+      url: https://api.bevi.click
+    podcast:
+      url: https://api.bevi.click
+
 payment:
   vqr:
     base-url : https://api.vietqr.org

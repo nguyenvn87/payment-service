@@ -55,7 +55,10 @@ springdoc:
       activated: true
 server:
   client:
-    url: http://localhost:8082
+    bive:
+      url: http://localhost:8082
+    podcast:
+      url: http://localhost:8082
 payment:
     vqr:
       base-url : https://dev.vietqr.org

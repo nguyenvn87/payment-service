@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "SyncDataService", url = "${server.client.url}")
+@FeignClient(name = "SyncDataService", url = "${server.client.bive.url}")
 public interface FeignClientSyncDataService {
 
     @PutMapping(value ="/api/bank/sync/data", consumes = "application/json")
