@@ -3,6 +3,7 @@ package com.uit.payment.controller;
 import com.uit.common.JsonUtil;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentSuccess;
+import com.uit.config.ServerClientProperties;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
 import com.uit.dto.response.QrCodeRes;
@@ -25,6 +26,10 @@ public class VietQrController {
     @Autowired
     private VietQrService vietQrService;
 
+    @Autowired
+    private ServerClientProperties serverClientProperties;
+
+
 //    @PostMapping("/generate/token-qr")
 //    public ResponseEntity<?> generateToken() {
 //
@@ -45,16 +50,13 @@ public class VietQrController {
         log.info(JsonUtil.toJson(infoTransactionReq));
         if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU)){
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE1)) {
-                infoTransactionReq.setAmount(590000);
-//                infoTransactionReq.setAmount(5000);
+                infoTransactionReq.setAmount(serverClientProperties.getBive().getPack().get(0));
             }
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE2)) {
-                infoTransactionReq.setAmount(1690000);
-//                infoTransactionReq.setAmount(6000);
+                infoTransactionReq.setAmount(serverClientProperties.getBive().getPack().get(1));
             }
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE3)) {
-                infoTransactionReq.setAmount(2990000);
-//                infoTransactionReq.setAmount(7000);
+                infoTransactionReq.setAmount(serverClientProperties.getBive().getPack().get(2));
             }
         }
         QrCodeRes response = vietQrService.generateQR(infoTransactionReq);

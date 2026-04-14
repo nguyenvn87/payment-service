@@ -121,6 +121,10 @@ server:
   client:
     bive:
       url: https://api.bevi.click
+      package:
+        - 7000
+        - 8000
+        - 9000
     podcast:
       url: https://api.bevi.click
 
