@@ -18,7 +18,7 @@ import com.uit.dto.response.InfoVietQrRes;
 import com.uit.dto.response.QrCodeRes;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
-import com.uit.payment.FeignClientSyncDataService;
+import com.uit.payment.FeignClientBiveService;
 import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.VietQrService;
@@ -53,14 +53,14 @@ public class VietQrServiceImpl implements VietQrService {
     private final String QR_TYPE = "0";
 
     private final FeignClientVietQrService feignClientVietQrService;
-    private final FeignClientSyncDataService feignClientSyncDataService;
+    private final FeignClientBiveService feignClientBiveService;
     private final CommonAuthUtils commonAuthUtils;
     private final OrderRepository orderRepository;
     private final ServerClientProperties serverClientProperties;
 
-    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, FeignClientSyncDataService feignClientSyncDataService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository, ServerClientProperties serverClientProperties) {
+    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, FeignClientBiveService feignClientBiveService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository, ServerClientProperties serverClientProperties) {
         this.feignClientVietQrService = feignClientVietQrService;
-        this.feignClientSyncDataService = feignClientSyncDataService;
+        this.feignClientBiveService = feignClientBiveService;
         this.commonAuthUtils = commonAuthUtils;
         this.orderRepository = orderRepository;
         this.serverClientProperties = serverClientProperties;

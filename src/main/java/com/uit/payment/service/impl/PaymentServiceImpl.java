@@ -1,7 +1,6 @@
 package com.uit.payment.service.impl;
 
 import com.uit.common.HmacUtil;
-import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.ServiceTypeEnums;
@@ -12,18 +11,15 @@ import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
-import com.uit.payment.FeignClientSyncDataService;
+import com.uit.payment.FeignClientBiveService;
+import com.uit.payment.FeignClientPodcastService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.PaymentService;
-import com.uit.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -34,12 +30,14 @@ public class PaymentServiceImpl implements PaymentService {
     private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private final OrderRepository orderRepository;
-    private final FeignClientSyncDataService feignClientSyncDataService;
+    private final FeignClientBiveService feignClientBiveService;
+    private final FeignClientPodcastService feignClientPodcastService;
 
 
-    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientSyncDataService feignClientSyncDataService) {
+    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientBiveService feignClientBiveService, FeignClientPodcastService feignClientPodcastService) {
         this.orderRepository = orderRepository;
-        this.feignClientSyncDataService = feignClientSyncDataService;
+        this.feignClientBiveService = feignClientBiveService;
+        this.feignClientPodcastService = feignClientPodcastService;
     }
 
     @Override
@@ -79,17 +77,37 @@ public class PaymentServiceImpl implements PaymentService {
         orderRepository.save(order);
 
         log.info("=============== payment information updated successfully ====================");
-
-        if (transactionCallback.getTerminalCode().equals(ServiceTypeEnums.BIVEEDU.name())){
-
-            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+        DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
                     .userId(transactionCallback.getSubTerminalCode())
                     .price(transactionCallback.getAmount()).build();
-            ResponseEntity<TokenResponse> response = feignClientSyncDataService.syneDataToService(dataSyncBankReq);
-            log.info("=============== Sync data to service ====================");
-            log.info("Sync data for user : {} with amount : {} ", transactionCallback.getSubTerminalCode(), transactionCallback.getAmount());
-            log.info("Response with status : {} ", response.getStatusCode());
-        }
+        syneDataToService(transactionCallback.getTerminalCode(),dataSyncBankReq);
+//        if (transactionCallback.getTerminalCode().equals(ServiceTypeEnums.BIVEEDU.name())){
+//
+//            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+//                    .userId(transactionCallback.getSubTerminalCode())
+//                    .price(transactionCallback.getAmount()).build();
+//            ResponseEntity<TokenResponse> response = feignClientBiveService.syneDataToService(dataSyncBankReq);
+//            log.info("=============== Sync data to service ====================");
+//            log.info("Sync data for user : {} with amount : {} ", transactionCallback.getSubTerminalCode(), transactionCallback.getAmount());
+//            log.info("Response with status : {} ", response.getStatusCode());
+//        }
 
+    }
+
+    private void syneDataToService(String serviceType, DataSyncBankReq dataSyncBankReq) {
+        log.info("=============== Sync data to service ====================");
+        ResponseEntity<TokenResponse> response = null;
+        switch (serviceType) {
+            case "BIVEEDU":
+                response = feignClientBiveService.syneDataToService(dataSyncBankReq);
+                log.info("Response with status : {} ", response.getStatusCode());
+                break;
+            case "PODCAST":
+                response = feignClientPodcastService.syneDataToService(dataSyncBankReq);
+                break;
+            default:
+                log.warn("Unknown service type: {}", serviceType);
+        }
+        log.info("=============== Sync data to service with status  =====================" + response.getStatusCode());
     }
 }
