@@ -21,21 +21,25 @@ public class ServerClientProperties {
     @Data
     public static class Bive {
         private String url;
+        private String redirect;
         private List<Integer> pack; // tránh dùng tên "package"
     }
 
     @Data
     public static class Podcast {
         private String url;
+        private String redirect;
     }
 
     @PostConstruct
     public void init() {
         if (bive != null && bive.getPack() != null) {
             log.info("Server client Bive url loaded: {}", bive.getUrl());
+            log.info("Server client Bive redirect loaded: {}", bive.getRedirect());
             log.info("Server client Bive packages loaded: {}", bive.getPack());
         }if (podcast != null) {
             log.info("Server client Podcast url loaded: {}", podcast.getUrl());
+            log.info("Server client Bive redirect loaded: {}", podcast.getRedirect());
         }else {
             log.warn("Bive packages is empty or not configured!");
         }

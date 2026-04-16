@@ -57,12 +57,14 @@ server:
   client:
     bive:
       url: http://localhost:8082
+      redirect: http://localhost:8082
       pack:
         - 7000
         - 8000
         - 9000
     podcast:
       url: http://localhost:8082
+      redirect: http://localhost:8082
 payment:
     vqr:
       base-url : https://dev.vietqr.org

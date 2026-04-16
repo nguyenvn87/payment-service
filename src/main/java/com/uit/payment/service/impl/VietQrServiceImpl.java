@@ -10,6 +10,7 @@ import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CommonAuthUtils;
 import com.uit.config.CompactEncoder;
+import com.uit.config.ServerClientProperties;
 import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.InfoTransactionReq;
 import com.uit.dto.request.InfoVietQrReq;
@@ -22,6 +23,7 @@ import com.uit.payment.FeignClientVietQrService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.service.VietQrService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,12 +56,14 @@ public class VietQrServiceImpl implements VietQrService {
     private final FeignClientSyncDataService feignClientSyncDataService;
     private final CommonAuthUtils commonAuthUtils;
     private final OrderRepository orderRepository;
+    private final ServerClientProperties serverClientProperties;
 
-    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, FeignClientSyncDataService feignClientSyncDataService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository) {
+    public VietQrServiceImpl(FeignClientVietQrService feignClientVietQrService, FeignClientSyncDataService feignClientSyncDataService, CommonAuthUtils commonAuthUtils, OrderRepository orderRepository, ServerClientProperties serverClientProperties) {
         this.feignClientVietQrService = feignClientVietQrService;
         this.feignClientSyncDataService = feignClientSyncDataService;
         this.commonAuthUtils = commonAuthUtils;
         this.orderRepository = orderRepository;
+        this.serverClientProperties = serverClientProperties;
     }
 
     @Override
@@ -99,6 +103,7 @@ public class VietQrServiceImpl implements VietQrService {
         String oderId = UUID.randomUUID().toString();
         String oderIdEncode = CompactEncoder.encode(oderId, TimeUtils.getCurrentTime(time));
         //DONE áp dụng khi có chữ kí trả ve
+        String urlRedirect = getRedirectUrl(infoTransactionReq.getServiceType());
         String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
         log.info("===================================== oderIdEncode  " + oderIdEncode );
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
@@ -114,7 +119,7 @@ public class VietQrServiceImpl implements VietQrService {
                 //DONE áp dụng khi có chữ kí trả ve
                 .sign(sign)
                 .terminalCode(infoTransactionReq.getServiceType().name())
-                .urlLink("dummy2")
+                .urlLink(urlRedirect)
                 .serviceCode("dummy3")
                 .subTerminalCode(infoTransactionReq.getUserId())
                 .build();
@@ -169,6 +174,14 @@ public class VietQrServiceImpl implements VietQrService {
 //        log.info(JsonUtil.toJson(order));
 
         return new QrCodeRes(body.qrLink(),body.content());
+    }
+
+    private String getRedirectUrl(ServiceTypeEnums serviceType) {
+        return switch (serviceType) {
+            case BIVEEDU -> serverClientProperties.getBive().getRedirect();
+            case PODCAST -> serverClientProperties.getPodcast().getRedirect();
+            default -> "redirect";
+        };
     }
 
 }
