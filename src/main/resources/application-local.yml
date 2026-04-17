@@ -63,8 +63,8 @@ server:
         - 8000
         - 9000
     podcast:
-      url: http://localhost:8082
-      redirect: http://localhost:8082
+      url: http://localhost:8899
+      redirect: http://localhost:8899
 payment:
     vqr:
       base-url : https://dev.vietqr.org
