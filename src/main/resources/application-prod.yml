@@ -127,7 +127,7 @@ server:
         - 8000
         - 9000
     podcast:
-      url: https://api.bevi.click
+      url: https://PODCAST-SERVICE
       redirect: http://localhost:8082
 
 payment:

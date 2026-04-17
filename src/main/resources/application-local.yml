@@ -63,7 +63,7 @@ server:
         - 8000
         - 9000
     podcast:
-      url: http://localhost:8899
+      url: http://PODCAST-SERVICE
       redirect: http://localhost:8899
 payment:
     vqr:
