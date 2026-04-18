@@ -35,4 +35,7 @@ public class TopupHistory {
     @Column(name = "POINT_ADDED",length = 18)
     private Float pointAdded;
 
+    @Column(name = "CONTENT_MSG",length = 150)
+    private String message;
+
 }
