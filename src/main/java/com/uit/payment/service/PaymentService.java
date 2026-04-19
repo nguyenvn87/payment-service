@@ -8,5 +8,5 @@ public interface PaymentService {
 
     void updateInformationPayment(TransactionCallback transactionCallback);
 
-    DeductResponse deductMoney(DeductRequest request);
+    boolean deductMoney(DeductRequest request);
 }

@@ -67,7 +67,18 @@ public class PaymentController {
 
     @PostMapping("/deduct")
     public ResponseEntity<DeductResponse> deduct(@RequestBody DeductRequest request) {
-        return ResponseEntity.ok(paymentService.deductMoney(request));
+
+        if (paymentService.deductMoney(request)){
+            return ResponseEntity.ok(DeductResponse.builder()
+                    .userId(request.getUserId())
+                    .status("Transaction successfully deducted")
+                    .build());
+        }
+        return ResponseEntity.badRequest().body(DeductResponse.builder()
+                    .userId(request.getUserId())
+                    .status("Transaction fail")
+                    .build());
+
     }
 
 }
