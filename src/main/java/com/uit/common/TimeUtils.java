@@ -9,4 +9,9 @@ public class TimeUtils {
         return now.atZone(ZoneId.of("Asia/Ho_Chi_Minh"))
                 .toEpochSecond();
     }
+
+    public static LocalDateTime getCurrentTimeWithLocalDateTime() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        return now;
+    }
 }

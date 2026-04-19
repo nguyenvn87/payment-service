@@ -11,15 +11,18 @@ import com.uit.dto.request.DataSyncBankReq;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
+import com.uit.entity.TopupHistory;
 import com.uit.payment.FeignClientBiveService;
 import com.uit.payment.FeignClientPodcastService;
 import com.uit.payment.repository.OrderRepository;
+import com.uit.payment.repository.ToptupRepository;
 import com.uit.payment.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -32,15 +35,17 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
     private final FeignClientBiveService feignClientBiveService;
     private final FeignClientPodcastService feignClientPodcastService;
+    private final ToptupRepository toptupRepository;
 
-
-    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientBiveService feignClientBiveService, FeignClientPodcastService feignClientPodcastService) {
+    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientBiveService feignClientBiveService, FeignClientPodcastService feignClientPodcastService, ToptupRepository toptupRepository) {
         this.orderRepository = orderRepository;
         this.feignClientBiveService = feignClientBiveService;
         this.feignClientPodcastService = feignClientPodcastService;
+        this.toptupRepository = toptupRepository;
     }
 
     @Override
+    @Transactional
     public void updateInformationPayment(TransactionCallback transactionCallback) {
 
         //DONE áp dụng khi có chữ kí trả ve
@@ -75,6 +80,17 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("=============== updateInformationPayment ====================== " + transactionCallback.getAmount());
         order.setPayedMoney(transactionCallback.getAmount());
         orderRepository.save(order);
+
+        //Save to toptupHistory
+        TopupHistory toptupHistory = TopupHistory.builder()
+                .order(order)
+                .createDate( TimeUtils.getCurrentTimeWithLocalDateTime())
+                .amountValue(transactionCallback.getAmount())
+
+                //TODO will add later
+                .pointAdded(1.0)
+                .build();
+        toptupRepository.save(toptupHistory);
 
         log.info("=============== payment information updated successfully ====================");
         DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
