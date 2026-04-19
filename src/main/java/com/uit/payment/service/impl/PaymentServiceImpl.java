@@ -8,14 +8,18 @@ import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CompactEncoder;
 import com.uit.dto.request.DataSyncBankReq;
+import com.uit.dto.request.DeductRequest;
 import com.uit.dto.request.TransactionCallback;
+import com.uit.dto.response.DeductResponse;
 import com.uit.dto.response.TokenResponse;
 import com.uit.entity.Order;
 import com.uit.entity.TopupHistory;
+import com.uit.entity.UserWallet;
 import com.uit.payment.FeignClientBiveService;
 import com.uit.payment.FeignClientPodcastService;
 import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.repository.ToptupRepository;
+import com.uit.payment.repository.UserWalletRepository;
 import com.uit.payment.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -36,12 +42,15 @@ public class PaymentServiceImpl implements PaymentService {
     private final FeignClientBiveService feignClientBiveService;
     private final FeignClientPodcastService feignClientPodcastService;
     private final ToptupRepository toptupRepository;
+    private final UserWalletRepository walletRepository;
 
-    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientBiveService feignClientBiveService, FeignClientPodcastService feignClientPodcastService, ToptupRepository toptupRepository) {
+
+    public PaymentServiceImpl(OrderRepository orderRepository, FeignClientBiveService feignClientBiveService, FeignClientPodcastService feignClientPodcastService, ToptupRepository toptupRepository, UserWalletRepository walletRepository) {
         this.orderRepository = orderRepository;
         this.feignClientBiveService = feignClientBiveService;
         this.feignClientPodcastService = feignClientPodcastService;
         this.toptupRepository = toptupRepository;
+        this.walletRepository = walletRepository;
     }
 
     @Override
@@ -125,5 +134,46 @@ public class PaymentServiceImpl implements PaymentService {
                 log.warn("Unknown service type: {}", serviceType);
         }
         log.info("=============== Sync data to service with status  =====================" + response.getStatusCode());
+    }
+
+    @Transactional
+    public DeductResponse deductMoney(DeductRequest request) {
+
+        UserWallet wallet = walletRepository.findByUserIdForUpdate(request.getUserId());
+        if (wallet == null) {
+            wallet.setUserId(request.getUserId());
+            wallet.setBalanceMoney(BigDecimal.ZERO);
+            walletRepository.save(wallet);
+            log.info("New wallet created for user {}", request.getUserId());
+        }
+
+        BigDecimal currentBalance = wallet.getBalanceMoney();
+
+        // validate
+        if (request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Invalid amount");
+        }
+
+        if (currentBalance.compareTo(request.getAmount()) < 0) {
+
+            //TODO return new payment exception
+            return DeductResponse.builder()
+                    .userId(request.getUserId())
+                    .remainBalance(currentBalance)
+                    .status("FAILED_INSUFFICIENT_BALANCE")
+                    .build();
+        }
+
+        // deduct
+        BigDecimal newBalance = currentBalance.subtract(request.getAmount());
+        wallet.setBalanceMoney(newBalance);
+
+        walletRepository.save(wallet);
+
+        return DeductResponse.builder()
+                .userId(request.getUserId())
+                .remainBalance(newBalance)
+                .status("SUCCESS")
+                .build();
     }
 }

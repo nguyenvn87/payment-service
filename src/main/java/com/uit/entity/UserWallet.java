@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 
 
 @Data
@@ -17,6 +18,6 @@ public class UserWallet {
     @Column(name = "USER_ID", length = 18)
     private String userId;
 
-    @Column(name = "BALANCE_MONEY", length = 18)
-    private Number value;
+    @Column(name = "balance_money", nullable = false)
+    private BigDecimal balanceMoney;
 }
