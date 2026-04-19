@@ -25,7 +25,7 @@ public enum PaymentError {
     WRONG_DATA_TRANSACTION ("FAIL","EE3", HttpStatus.BAD_REQUEST, "xảy ra lỗi trong quá trình giải mã"),
 
     // ===== VALID DATA =====
-    WRONG_FAIL_SINGER_KEY("FAIL","SIG", HttpStatus.BAD_REQUEST, "sai chữ kí");
+    WRONG_FAIL_SINGER_KEY("FAIL","SIG", HttpStatus.BAD_REQUEST, "sai chữ kí"),
 //    VIETQR_TIMEOUT("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Timeout khi gọi VietQR"),
 //    VIETQR_ERROR("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
 //    VIETQR_ERROR1("FAIL","VQR", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi từ hệ thống VietQR"),
@@ -33,6 +33,26 @@ public enum PaymentError {
 
     // ===== SYSTEM ERROR =====
 //    INTERNAL_ERROR("FAIL","99", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống");
+
+    // ===== SIGNATURE =====
+    INVALID_SIGNATURE("FAIL","WAL1", HttpStatus.BAD_REQUEST, "Sai chữ ký"),
+
+    // ===== BALANCE =====
+    INSUFFICIENT_BALANCE("FAIL","WAL2", HttpStatus.BAD_REQUEST, "Số dư không đủ"),
+
+    // ===== USER =====
+    USER_NOT_FOUND("FAIL","WAL3", HttpStatus.NOT_FOUND, "Không tìm thấy user"),
+
+    // ===== WALLET =====
+    WALLET_NOT_FOUND("FAIL","WAL4", HttpStatus.NOT_FOUND, "Không tìm thấy ví"),
+    WALLET_LOCKED("FAIL","WAL5", HttpStatus.FORBIDDEN, "Ví đang bị khóa"),
+
+    // ===== TRANSACTION =====
+    TRANSACTION_FAILED("FAIL","WAL6", HttpStatus.INTERNAL_SERVER_ERROR, "Giao dịch thất bại"),
+    DUPLICATE_TRANSACTION("FAIL","WAL7", HttpStatus.CONFLICT, "Giao dịch bị trùng"),
+
+    // ===== VALIDATION =====
+    INVALID_AMOUNT("FAIL","WAL8", HttpStatus.BAD_REQUEST, "Số tiền không hợp lệ");
 
     private final String result;
     private final String errorCode;

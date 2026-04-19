@@ -140,31 +140,26 @@ public class PaymentServiceImpl implements PaymentService {
     public DeductResponse deductMoney(DeductRequest request) {
 
         UserWallet wallet = walletRepository.findByUserIdForUpdate(request.getUserId());
+
         if (wallet == null) {
-            wallet.setUserId(request.getUserId());
-            wallet.setBalanceMoney(BigDecimal.ZERO);
-            walletRepository.save(wallet);
+            UserWallet newWallet = new UserWallet();
+            newWallet.setUserId(request.getUserId());
+            newWallet.setBalanceMoney(BigDecimal.ZERO);
+            walletRepository.save(newWallet);
             log.info("New wallet created for user {}", request.getUserId());
+            throw new PaymentException(PaymentError.INSUFFICIENT_BALANCE);
         }
 
         BigDecimal currentBalance = wallet.getBalanceMoney();
 
-        // validate
         if (request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Invalid amount");
+            throw new PaymentException(PaymentError.INVALID_AMOUNT);
         }
 
         if (currentBalance.compareTo(request.getAmount()) < 0) {
-
-            //TODO return new payment exception
-            return DeductResponse.builder()
-                    .userId(request.getUserId())
-                    .remainBalance(currentBalance)
-                    .status("FAILED_INSUFFICIENT_BALANCE")
-                    .build();
+            throw new PaymentException(PaymentError.INSUFFICIENT_BALANCE);
         }
 
-        // deduct
         BigDecimal newBalance = currentBalance.subtract(request.getAmount());
         wallet.setBalanceMoney(newBalance);
 
