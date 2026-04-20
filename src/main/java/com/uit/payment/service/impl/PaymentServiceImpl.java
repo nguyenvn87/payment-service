@@ -98,6 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
 
                 //TODO will add later
                 .pointAdded(1.0)
+                .message(transactionCallback.getContent())
                 .build();
         toptupRepository.save(toptupHistory);
 
