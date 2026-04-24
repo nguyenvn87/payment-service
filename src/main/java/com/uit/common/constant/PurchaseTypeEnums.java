@@ -2,5 +2,6 @@ package com.uit.common.constant;
 
 public enum PurchaseTypeEnums {
     POINT, // mua bằng điểm thưởng
-    CASH // mua bằng tiền
+    CASH,  // mua bằng tiền
+    BANKQR  // mua bằng quét QR
 }

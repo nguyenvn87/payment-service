@@ -30,9 +30,12 @@ public class TopupHistory {
     private LocalDateTime createDate;
 
     @Column(name = "MONEY_AMOUNT",length = 18)
-    private Float amountValue;
+    private double amountValue;
 
-    @Column(name = "POINT_ADDED",length = 18)
-    private Float pointAdded;
+    @Column(name = "POINT_ADDED",length = 10)
+    private double pointAdded;
+
+    @Column(name = "CONTENT_MSG",length = 150)
+    private String message;
 
 }

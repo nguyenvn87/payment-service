@@ -24,17 +24,13 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private Order cart;
+    private Order order;
 
     @Column(name = "AMOUNT")
-    private Float amount;
-
-    @CreationTimestamp
-    @Column(name = "CREATE_DATE", updatable = false)
-    private LocalDateTime createDate;
+    private double amount;
 
     @Column(name = "PRICE",length = 18)
-    private Float price;
+    private double price;
 
     @Column(name = "SERVICE_ID")
     private String serviceId;

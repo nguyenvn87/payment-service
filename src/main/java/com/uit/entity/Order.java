@@ -67,7 +67,7 @@ public class Order {
     @Column(name = "SERVICE_TYPE", length = 30)
     private ServiceTypeEnums serviceType;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "order")
     private List<OrderDetail> details = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
