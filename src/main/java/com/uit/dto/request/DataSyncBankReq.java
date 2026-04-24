@@ -9,4 +9,6 @@ public class DataSyncBankReq {
 
     private String userId;
     private double price;
+    private String courseId;
+    private String packageType;
 }

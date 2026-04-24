@@ -103,35 +103,45 @@ public class PaymentServiceImpl implements PaymentService {
         toptupRepository.save(toptupHistory);
 
         log.info("=============== payment information updated successfully ====================");
-        DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+        DataSyncBankReq dataSync = decodeData(transactionCallback.getTerminalCode(),transactionCallback);
+        if (dataSync != null) {
+            syneDataToService(transactionCallback.getTerminalCode(), dataSync);
+        }
+    }
+
+    private DataSyncBankReq decodeData(String serviceType,TransactionCallback transactionCallback) {
+        log.info("=============== Sync data to service ====================");
+        if (serviceType.equals("BIVEEDU")) {
+            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
                     .userId(transactionCallback.getSubTerminalCode())
                     .price(transactionCallback.getAmount()).build();
-        syneDataToService(transactionCallback.getTerminalCode(),dataSyncBankReq);
-//        if (transactionCallback.getTerminalCode().equals(ServiceTypeEnums.BIVEEDU.name())){
-//
-//            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
-//                    .userId(transactionCallback.getSubTerminalCode())
-//                    .price(transactionCallback.getAmount()).build();
-//            ResponseEntity<TokenResponse> response = feignClientBiveService.syneDataToService(dataSyncBankReq);
-//            log.info("=============== Sync data to service ====================");
-//            log.info("Sync data for user : {} with amount : {} ", transactionCallback.getSubTerminalCode(), transactionCallback.getAmount());
-//            log.info("Response with status : {} ", response.getStatusCode());
-//        }
+            return dataSyncBankReq;
+        }
+        if (serviceType.equals("PODCAST")) {
+            CompactEncoder.DecodeResult result = CompactEncoder.decodeExtend(transactionCallback.getSubTerminalCode());
+            DataSyncBankReq dataSyncBankReq = DataSyncBankReq.builder()
+                    .userId(result.userId())
+                    .price(transactionCallback.getAmount())
+                    .courseId(result.courseId())
+                    .packageType(result.serviceType().name())
+                    .build();
+            return dataSyncBankReq;
+        }
 
+        return null;
     }
 
     private void syneDataToService(String serviceType, DataSyncBankReq dataSyncBankReq) {
         log.info("=============== Sync data to service ====================");
         ResponseEntity<TokenResponse> response = null;
-        switch (serviceType) {
-            case "BIVEEDU":
-                response = feignClientBiveService.syneDataToService(dataSyncBankReq);
-                break;
-            case "PODCAST":
-                response = feignClientPodcastService.syneDataToService(dataSyncBankReq);
-                break;
-            default:
-                log.warn("Unknown service type: {}", serviceType);
+        if (serviceType.equals("BIVEEDU")) {
+            response = feignClientBiveService.syneDataToService(dataSyncBankReq);
+        }
+        if( serviceType.equals("PODCAST") && dataSyncBankReq.getPackageType().equals("BANK")) {
+            response = feignClientPodcastService.syneDataToService(dataSyncBankReq);
+
+        }else{
+            log.warn("Unknown service type: {}", serviceType);
         }
         log.info("=============== Sync data to service with status  =====================" + response.getStatusCode());
     }
