@@ -126,7 +126,6 @@ public class PaymentServiceImpl implements PaymentService {
         switch (serviceType) {
             case "BIVEEDU":
                 response = feignClientBiveService.syneDataToService(dataSyncBankReq);
-                log.info("Response with status : {} ", response.getStatusCode());
                 break;
             case "PODCAST":
                 response = feignClientPodcastService.syneDataToService(dataSyncBankReq);

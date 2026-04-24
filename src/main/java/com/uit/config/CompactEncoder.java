@@ -1,9 +1,11 @@
 package com.uit.config;
 
+import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -57,4 +59,69 @@ public class CompactEncoder {
      * DTO chứa dữ liệu sau khi decode
      */
     public record DecodedData(UUID uuid, long extraData) {}
+
+    public static String encodeExtend(String userId, String courseId, ServiceTypeEnums serviceType) {
+        try {
+            byte[] userBytes = userId.getBytes(StandardCharsets.UTF_8);
+            byte[] courseBytes = courseId.getBytes(StandardCharsets.UTF_8);
+            String enumName = serviceType.name();
+            byte[] enumBytes = enumName.getBytes(StandardCharsets.UTF_8);
+
+            ByteBuffer buffer = ByteBuffer.allocate(
+                    4 + userBytes.length +
+                            4 + courseBytes.length +
+                            4 + enumBytes.length
+            );
+
+            // userId
+            buffer.putInt(userBytes.length);
+            buffer.put(userBytes);
+
+            // courseId
+            buffer.putInt(courseBytes.length);
+            buffer.put(courseBytes);
+
+            // enum
+            buffer.putInt(enumBytes.length);
+            buffer.put(enumBytes);
+
+            return ENCODER.encodeToString(buffer.array());
+        } catch (Exception e) {
+            throw new PaymentException(PaymentError.ENCODE_DATA_FAIL);
+        }
+    }
+
+    public static DecodeResult decodeExtend(String encoded) {
+        try {
+            byte[] bytes = DECODER.decode(encoded);
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+
+            // userId
+            int userLength = buffer.getInt();
+            byte[] userBytes = new byte[userLength];
+            buffer.get(userBytes);
+            String userId = new String(userBytes, StandardCharsets.UTF_8);
+
+            // courseId
+            int courseLength = buffer.getInt();
+            byte[] courseBytes = new byte[courseLength];
+            buffer.get(courseBytes);
+            String courseId = new String(courseBytes, StandardCharsets.UTF_8);
+
+            // enum (FIX CHỖ NÀY)
+            int enumLength = buffer.getInt();
+            byte[] enumBytes = new byte[enumLength];
+            buffer.get(enumBytes);
+            String name = new String(enumBytes, StandardCharsets.UTF_8);
+
+            ServiceTypeEnums serviceType = ServiceTypeEnums.valueOf(name);
+
+            return new DecodeResult(userId, courseId, serviceType);
+        } catch (Exception e) {
+            throw new PaymentException(PaymentError.DECODE_DATA_FAIL);
+        }
+    }
+
+
+    public record DecodeResult (String userId, String courseId,ServiceTypeEnums serviceType) {}
 }

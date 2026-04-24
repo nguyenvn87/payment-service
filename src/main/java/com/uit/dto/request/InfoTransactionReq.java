@@ -17,12 +17,14 @@ public class InfoTransactionReq {
     @Size(max = 255, message = "Content tối đa 255 ký tự")
     private final String content;
 
-    @NotBlank(message = "Phone không được để trống")
+//    @NotBlank(message = "Phone không được để trống")
     private String phone;
 
 //    @NotBlank(message = "RefCode không được để trống")
 //    @Size(max = 50, message = "RefCode tối đa 50 ký tự")
     private String refCode;
+
+    private String courseId;
 
     @NotBlank(message = "UserId không được để trống")
     private String userId;
@@ -31,4 +33,5 @@ public class InfoTransactionReq {
     private ServiceTypeEnums serviceType;
 
     private ServiceTypeEnums packageType;
+
 }
