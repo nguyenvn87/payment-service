@@ -25,8 +25,6 @@ public class Order {
 
     @Id
     @Column(name = "ORDER_ID", columnDefinition = "VARCHAR(36)")
-//    @GeneratedValue(generator = "UUID")
-//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String orderId;
 
     @Column(name = "BILL_CD",length = 36)
@@ -70,6 +68,6 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> details = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private TopupHistory transaction;
+    //@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private TopupHistory transaction;
 }

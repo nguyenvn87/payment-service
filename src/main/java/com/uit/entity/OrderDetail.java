@@ -38,4 +38,8 @@ public class OrderDetail {
     @Column(name = "SERVICE_TYPE")
     private ServiceTypeEnums serviceType;
 
+    // Tên dịch vụ: gói 1 năm, 3 năm..., tên podcast
+    @Column(name = "SERVICE_NM",length = 150)
+    private String serviceName;
+
 }

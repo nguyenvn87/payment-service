@@ -59,12 +59,33 @@ public class OrderServiceImpl implements OrderService {
         if(infoTransactionReq.getServiceType()== ServiceTypeEnums.PACKAGE)
             detail.setServiceType(ServiceTypeEnums.PACKAGE);
         else detail.setServiceType(ServiceTypeEnums.EXTENT);
+
         order.setDetails(List.of(detail));
         return orderRepository.save(order);
     }
     @Override
     public Order createOrderPodcast(String orderId, InfoTransactionReq infoTransactionReq, LocalDateTime time){
 
-        return null;
+        Order order = Order.builder()
+                .orderId(orderId)
+                .billCode("MHD")
+                .createDate(time)
+                .payStatus(PaymentStsEnums.Pending)
+                .payedMoney(0)
+                .phone(infoTransactionReq.getPhone())
+                .purchaseType(PurchaseTypeEnums.BANKQR)
+                .ref(infoTransactionReq.getRefCode())
+                .totalMoney(infoTransactionReq.getAmount())
+                .userId(infoTransactionReq.getUserId())
+                .serviceType(ServiceTypeEnums.PODCAST)
+                .flag("NORMAL")
+                .build();
+        OrderDetail detail = new OrderDetail();
+        detail.setOrder(order);
+        detail.setAmount(infoTransactionReq.getAmount());
+        detail.setServiceType(ServiceTypeEnums.PODCAST);
+
+        order.setDetails(List.of(detail));
+        return orderRepository.save(order);
     }
 }

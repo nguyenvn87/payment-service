@@ -21,9 +21,14 @@ public class TopupHistory {
     @Column(name = "TOPUP_ID", columnDefinition = "VARCHAR(36)")
     String topupId;
 
-    @OneToOne
-    @JoinColumn(name = "ORDER_ID")
-    private Order order;
+    //@OneToOne
+    //@JoinColumn(name = "ORDER_ID")
+    //private Order order;
+    @Column(name = "ORDER_ID",length = 36)
+    private String orderId;
+
+    @Column(name = "BILL_CD",length = 18)
+    private String billCd;
 
     @CreationTimestamp
     @Column(name = "CREATE_DATE", updatable = false)
@@ -37,5 +42,8 @@ public class TopupHistory {
 
     @Column(name = "CONTENT_MSG",length = 150)
     private String message;
+
+    @Column(name = "REF_CODE", length = 10)
+    private String ref;
 
 }

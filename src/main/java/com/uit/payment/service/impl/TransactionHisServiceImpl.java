@@ -30,7 +30,8 @@ public class TransactionHisServiceImpl implements TransactionHisService {
     @Override
     public void createTransactionHistory(Order order, TransactionCallback transactionCallback){
         TopupHistory trans = new TopupHistory();
-        trans.setOrder(order);
+        trans.setOrderId(order.getOrderId());
+        trans.setBillCd(order.getBillCode());
         trans.setAmountValue(order.getTotalMoney());
         trans.setPointAdded(0);
         trans.setMessage(transactionCallback.getContent());
