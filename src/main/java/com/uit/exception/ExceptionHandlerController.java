@@ -3,11 +3,14 @@ package com.uit.exception;
 import com.uit.common.constant.ErrorCode;
 import com.uit.common.exceptions.BusinessException;
 import com.uit.common.exceptions.HttpStatusResponse;
+import com.uit.common.exceptions.PaymentException;
+import com.uit.dto.response.ErrorPaymentResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +33,23 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class ExceptionHandlerController {
 
     private final Logger errorLog = LoggerFactory.getLogger("ELK-ERROR-LOG");
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorPaymentResponse> handlePaymentExceptions(PaymentException ex) {
+
+
+        //TODO den nua se bo error message ra khoi data tra ve . chi tra ve ma loi
+        ErrorPaymentResponse errorResponse = new ErrorPaymentResponse(
+                ex.getError(),
+                ex.getErrorCode(),
+                ex.getErrorStatusCode(),
+                ex.getErrorMessage()
+        );
+
+        return ResponseEntity
+                .status(ex.getErrorStatusCode())
+                .body(errorResponse);
+    }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})
     @ResponseBody

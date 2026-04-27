@@ -2,6 +2,7 @@ package com.uit.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "TOPTUP_HISTORY")
+@Builder
 @NoArgsConstructor @AllArgsConstructor
 public class TopupHistory {
 
@@ -30,9 +32,12 @@ public class TopupHistory {
     private LocalDateTime createDate;
 
     @Column(name = "MONEY_AMOUNT",length = 18)
-    private Float amountValue;
+    private Double amountValue;
 
     @Column(name = "POINT_ADDED",length = 18)
-    private Float pointAdded;
+    private Double pointAdded;
+
+    @Column(name = "CONTENT_MSG",length = 150)
+    private String message;
 
 }

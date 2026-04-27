@@ -72,11 +72,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          #issuer-uri: https://upis-auth.uitgis.vn
           issuer-uri: http://103.82.133.193:8900
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER
   mysql.datasource:
-    url: jdbc:mysql://103.82.133.193:3306/payment?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:mysql://mysql-bive:3306/payment?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+#    url: jdbc:mysql://103.82.133.193:9091/payment?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
     username: root
     password: 123456@
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -88,7 +88,7 @@ spring:
   jpa:
     #database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     format_sql: true
 eureka:
@@ -116,3 +116,29 @@ springdoc:
     tryItOutEnabled: false
     syntaxHighlight:
       activated: true
+
+server:
+  client:
+    bive:
+      url: https://api.bevi.click
+      redirect: https://prod.d1vcb1w1b7j9n0.amplifyapp.com/
+      pack:
+        - 7000
+        - 8000
+        - 9000
+    podcast:
+      url: https://PODCAST-SERVICE
+      redirect: http://localhost:8082
+
+payment:
+  vqr:
+    base-url : https://api.vietqr.org
+    username: customer-vietqrtest-bive
+    password: Vietqrtestbive
+  jwt:
+    secret-key: 'Wm9Qd1h3d0xZb2NQd0R5ZkJ1Q1h5aGZ3Z2l4dFZ5QkR5eVJ3T1d3aG1zU2h3eUZ4c3p3b1lVbVh5Z0J2b3RzU2pQd1dXbQ=='
+    expiration: 60000
+  client:
+    username: customer-bive-user26534
+    password: Y3VzdG9tZXItYml2ZS11c2VyMjY1MzQ=
+  signature: my-signature

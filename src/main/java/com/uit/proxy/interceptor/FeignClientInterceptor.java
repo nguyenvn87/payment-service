@@ -18,7 +18,6 @@ public class FeignClientInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("11111111111");
         if(authentication != null && authentication instanceof JwtAuthenticationToken oauth){
             String token = getBearerTokenHeader();
             //requestTemplate.header(AUTHORIZATION_HEADER, String.format("%s %s", TOKEN_TYPE, token));
