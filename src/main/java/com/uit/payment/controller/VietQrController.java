@@ -1,6 +1,7 @@
 package com.uit.payment.controller;
 
 import com.uit.common.JsonUtil;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentSuccess;
 import com.uit.config.ServerClientProperties;
@@ -48,7 +49,8 @@ public class VietQrController {
 
         log.info("==================== Start generate qr code  ========================");
         log.info(JsonUtil.toJson(infoTransactionReq));
-        if (infoTransactionReq.getServiceType().equals(ServiceTypeEnums.BIVEEDU)){
+        if (infoTransactionReq.getServiceType().equals(ProjectEnums.BIVEEDU)){
+            //infoTransactionReq.setAmount(infoTransactionReq.getAmount());
             if (infoTransactionReq.getPackageType().equals(ServiceTypeEnums.PACKAGE1)) {
                 infoTransactionReq.setAmount(serverClientProperties.getBive().getPack().get(0));
             }

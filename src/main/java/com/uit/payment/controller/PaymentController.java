@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uit.common.JsonUtil;
 import com.uit.common.exceptions.PaymentException;
 import com.uit.config.CommonAuthUtils;
+import com.uit.dto.request.DeductRequest;
 import com.uit.dto.request.TransactionCallback;
 import com.uit.dto.request.TransactionResponseObject;
-import com.uit.dto.response.ErrorResponse;
-import com.uit.dto.response.SuccessResponse;
-import com.uit.dto.response.TokenResponse;
-import com.uit.dto.response.ValidClientRes;
+import com.uit.dto.response.*;
 import com.uit.payment.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +62,22 @@ public class PaymentController {
         } catch (Exception ex) {
             return new ResponseEntity<>(new ErrorResponse(true, "TRANSACTION_FAILED", ex.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    @PostMapping("/deduct")
+    public ResponseEntity<DeductResponse> deduct(@RequestBody DeductRequest request) {
+
+        if (paymentService.deductMoney(request)){
+            return ResponseEntity.ok(DeductResponse.builder()
+                    .userId(request.getUserId())
+                    .status("Transaction successfully deducted")
+                    .build());
+        }
+        return ResponseEntity.badRequest().body(DeductResponse.builder()
+                    .userId(request.getUserId())
+                    .status("Transaction fail")
+                    .build());
 
     }
 

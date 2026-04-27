@@ -3,6 +3,7 @@ package com.uit.payment.service.impl;
 import com.uit.common.HmacUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
@@ -50,15 +51,13 @@ public class OrderServiceImpl implements OrderService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
-                .serviceType(infoTransactionReq.getServiceType())
+                .projectType(ProjectEnums.BIVEEDU)
                 .flag("NORMAL")
                 .build();
         OrderDetail detail = new OrderDetail();
         detail.setOrder(order);
         detail.setAmount(infoTransactionReq.getAmount());
-        if(infoTransactionReq.getServiceType()== ServiceTypeEnums.PACKAGE)
-            detail.setServiceType(ServiceTypeEnums.PACKAGE);
-        else detail.setServiceType(ServiceTypeEnums.EXTENT);
+        detail.setServiceType(infoTransactionReq.getPackageType());
 
         order.setDetails(List.of(detail));
         return orderRepository.save(order);
@@ -77,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
-                .serviceType(ServiceTypeEnums.PODCAST)
+                .projectType(ProjectEnums.PODCAST)
                 .flag("NORMAL")
                 .build();
         OrderDetail detail = new OrderDetail();

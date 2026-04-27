@@ -1,7 +1,9 @@
 package com.uit.entity;
 
+import com.uit.common.constant.ProjectEnums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "TOPTUP_HISTORY")
 @NoArgsConstructor @AllArgsConstructor
+@Builder
 public class TopupHistory {
 
     @Id
@@ -35,15 +38,19 @@ public class TopupHistory {
     private LocalDateTime createDate;
 
     @Column(name = "MONEY_AMOUNT",length = 18)
-    private double amountValue;
+    private Double amountValue;
 
-    @Column(name = "POINT_ADDED",length = 10)
-    private double pointAdded;
+    @Column(name = "POINT_ADDED",length = 18)
+    private Double pointAdded;
 
     @Column(name = "CONTENT_MSG",length = 150)
     private String message;
 
     @Column(name = "REF_CODE", length = 10)
     private String ref;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PROJECT_TYPE", length = 30)
+    private ProjectEnums projectType;
 
 }

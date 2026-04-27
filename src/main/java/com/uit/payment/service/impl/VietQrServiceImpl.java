@@ -4,6 +4,7 @@ import com.uit.common.HmacUtil;
 import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
@@ -121,7 +122,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .terminalCode(infoTransactionReq.getServiceType().name())
                 .urlLink(urlRedirect)
                 .serviceCode("dummy3")
-                .subTerminalCode(infoTransactionReq.getUserId())
+                .subTerminalCode(getSubTerminalCode(infoTransactionReq))
                 .build();
         log.info("============= InfoTransactionReq =================");
         log.info(JsonUtil.toJson(infoVietQrReq));
@@ -166,7 +167,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
-                .serviceType(infoTransactionReq.getServiceType())
+                .projectType(infoTransactionReq.getServiceType())
                 .flag("NORMAL")
                 .build();
         orderRepository.save(order);
@@ -176,12 +177,21 @@ public class VietQrServiceImpl implements VietQrService {
         return new QrCodeRes(body.qrLink(),body.content());
     }
 
-    private String getRedirectUrl(ServiceTypeEnums serviceType) {
+    private String getRedirectUrl(ProjectEnums serviceType) {
         return switch (serviceType) {
             case BIVEEDU -> serverClientProperties.getBive().getRedirect();
             case PODCAST -> serverClientProperties.getPodcast().getRedirect();
             default -> "redirect";
         };
+    }
+
+    private String getSubTerminalCode(InfoTransactionReq infoTransactionReq){
+
+        switch (infoTransactionReq.getServiceType()) {
+            case BIVEEDU -> infoTransactionReq.getUserId();
+            case PODCAST -> CompactEncoder.encodeExtend(infoTransactionReq.getUserId(), infoTransactionReq.getCourseId(),infoTransactionReq.getPackageType());
+        }
+        return "";
     }
 
 }

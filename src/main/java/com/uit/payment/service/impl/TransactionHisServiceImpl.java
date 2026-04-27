@@ -1,5 +1,6 @@
 package com.uit.payment.service.impl;
 
+import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.dto.request.InfoTransactionReq;
@@ -33,8 +34,10 @@ public class TransactionHisServiceImpl implements TransactionHisService {
         trans.setOrderId(order.getOrderId());
         trans.setBillCd(order.getBillCode());
         trans.setAmountValue(order.getTotalMoney());
-        trans.setPointAdded(0);
+        trans.setPointAdded(1.0);
         trans.setMessage(transactionCallback.getContent());
+        trans.setProjectType(order.getProjectType());
+        trans.setCreateDate(TimeUtils.getCurrentTimeWithLocalDateTime());
         transactionRepository.save(trans);
     }
 }

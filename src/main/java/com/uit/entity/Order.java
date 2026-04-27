@@ -1,6 +1,7 @@
 package com.uit.entity;
 
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import jakarta.persistence.*;
@@ -63,7 +64,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SERVICE_TYPE", length = 30)
-    private ServiceTypeEnums serviceType;
+    private ProjectEnums projectType;
 
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> details = new ArrayList<>();

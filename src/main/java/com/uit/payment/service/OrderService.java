@@ -8,4 +8,5 @@ import java.time.LocalDateTime;
 public interface OrderService {
     Order createOrderBive(String orderId, InfoTransactionReq infoTransactionReq, LocalDateTime time);
     Order createOrderPodcast(String orderId, InfoTransactionReq infoTransactionReq, LocalDateTime time);
+    //String generateOrderId();
 }
