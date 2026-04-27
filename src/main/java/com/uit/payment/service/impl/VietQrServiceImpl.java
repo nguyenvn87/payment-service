@@ -70,7 +70,7 @@ public class VietQrServiceImpl implements VietQrService {
     public TokenResponse getTokenToCallQR() {
 
         String basicAuth = commonAuthUtils.basicAuth(CLIENT_USERNAME, CLIENT_PASSWORD);
-
+        log.info("Call to api basicAuth : username: {}, passwd:{}", CLIENT_USERNAME, CLIENT_PASSWORD);
         ResponseEntity<TokenResponse> response =
                 feignClientVietQrService.getTokenGenerateQR(basicAuth);
 
