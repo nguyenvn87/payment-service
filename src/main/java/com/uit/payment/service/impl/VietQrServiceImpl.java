@@ -105,7 +105,7 @@ public class VietQrServiceImpl implements VietQrService {
         //DONE áp dụng khi có chữ kí trả ve
         String urlRedirect = getRedirectUrl(infoTransactionReq.getServiceType());
         String sign = HmacUtil.generateSignature(oderIdEncode,SIGNER_KEY);
-        log.info("===================================== oderIdEncode  " + oderIdEncode );
+        log.info("===================================== oderIdEncode11111  " + oderIdEncode );
         InfoVietQrReq infoVietQrReq = InfoVietQrReq.builder()
                 .amount(infoTransactionReq.getAmount())
                 .bankAccount(BANK_ACCOUNT)
@@ -123,9 +123,9 @@ public class VietQrServiceImpl implements VietQrService {
                 .serviceCode("dummy3")
                 .subTerminalCode(getSubTerminalCode(infoTransactionReq))
                 .build();
-        log.info("============= InfoTransactionReq =================");
+        log.info("============= InfoTransactionReq =================11111");
         log.info(JsonUtil.toJson(infoVietQrReq));
-
+        log.info("====JSON=============22222");
         TokenResponse tokenResponse = getTokenToCallQR();
         String accessToken = tokenResponse.getAccess_token();
 
