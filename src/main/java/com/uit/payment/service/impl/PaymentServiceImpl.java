@@ -3,6 +3,7 @@ package com.uit.payment.service.impl;
 import com.uit.common.HmacUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
 import com.uit.common.exceptions.PaymentException;
@@ -21,8 +22,10 @@ import com.uit.payment.repository.OrderRepository;
 import com.uit.payment.repository.ToptupRepository;
 import com.uit.payment.repository.UserWalletRepository;
 import com.uit.payment.service.PaymentService;
+import com.uit.payment.service.TransactionHisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${payment.signature}")
     private String SIGNER_KEY; ;
+
+    @Autowired
+    private TransactionHisService transactionHisService;
 
     private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
@@ -91,16 +97,18 @@ public class PaymentServiceImpl implements PaymentService {
         orderRepository.save(order);
 
         //Save to toptupHistory
-        TopupHistory toptupHistory = TopupHistory.builder()
-                .order(order)
+        /*TopupHistory toptupHistory = TopupHistory.builder()
+                .orderId(order.getOrderId())
                 .createDate( TimeUtils.getCurrentTimeWithLocalDateTime())
                 .amountValue(transactionCallback.getAmount())
 
                 //TODO will add later
                 .pointAdded(1.0)
+                .projectType(ProjectEnums.BIVEEDU)
                 .message(transactionCallback.getContent())
                 .build();
-        toptupRepository.save(toptupHistory);
+        toptupRepository.save(toptupHistory);*/
+        transactionHisService.createTransactionHistory(order, transactionCallback);
 
         log.info("=============== payment information updated successfully ====================");
         DataSyncBankReq dataSync = decodeData(transactionCallback.getTerminalCode(),transactionCallback);

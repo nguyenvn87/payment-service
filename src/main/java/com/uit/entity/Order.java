@@ -1,6 +1,7 @@
 package com.uit.entity;
 
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import jakarta.persistence.*;
@@ -25,8 +26,6 @@ public class Order {
 
     @Id
     @Column(name = "ORDER_ID", columnDefinition = "VARCHAR(36)")
-//    @GeneratedValue(generator = "UUID")
-//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String orderId;
 
     @Column(name = "BILL_CD",length = 36)
@@ -65,11 +64,11 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SERVICE_TYPE", length = 30)
-    private ServiceTypeEnums serviceType;
+    private ProjectEnums projectType;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "order")
     private List<OrderDetail> details = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private TopupHistory transaction;
+    //@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private TopupHistory transaction;
 }

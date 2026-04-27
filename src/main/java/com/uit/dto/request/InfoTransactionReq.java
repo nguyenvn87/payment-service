@@ -1,5 +1,6 @@
 package com.uit.dto.request;
 
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -29,8 +30,8 @@ public class InfoTransactionReq {
     @NotBlank(message = "UserId không được để trống")
     private String userId;
 
-    @NotNull(message = "ServiceType không được null")
-    private ServiceTypeEnums serviceType;
+    @NotNull(message = "serviceType không được null")
+    private ProjectEnums serviceType;
 
     private ServiceTypeEnums packageType;
 

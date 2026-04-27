@@ -24,22 +24,22 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private Order cart;
+    private Order order;
 
     @Column(name = "AMOUNT")
-    private Float amount;
-
-    @CreationTimestamp
-    @Column(name = "CREATE_DATE", updatable = false)
-    private LocalDateTime createDate;
+    private double amount;
 
     @Column(name = "PRICE",length = 18)
-    private Float price;
+    private double price;
 
     @Column(name = "SERVICE_ID")
     private String serviceId;
 
     @Column(name = "SERVICE_TYPE")
     private ServiceTypeEnums serviceType;
+
+    // Tên dịch vụ: gói 1 năm, 3 năm..., tên podcast
+    @Column(name = "SERVICE_NM",length = 150)
+    private String serviceName;
 
 }

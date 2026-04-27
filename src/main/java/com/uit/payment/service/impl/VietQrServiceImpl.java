@@ -4,6 +4,7 @@ import com.uit.common.HmacUtil;
 import com.uit.common.JsonUtil;
 import com.uit.common.TimeUtils;
 import com.uit.common.constant.PaymentStsEnums;
+import com.uit.common.constant.ProjectEnums;
 import com.uit.common.constant.PurchaseTypeEnums;
 import com.uit.common.constant.ServiceTypeEnums;
 import com.uit.common.exceptions.PaymentError;
@@ -166,7 +167,7 @@ public class VietQrServiceImpl implements VietQrService {
                 .ref(infoTransactionReq.getRefCode())
                 .totalMoney(infoTransactionReq.getAmount())
                 .userId(infoTransactionReq.getUserId())
-                .serviceType(infoTransactionReq.getServiceType())
+                .projectType(infoTransactionReq.getServiceType())
                 .flag("NORMAL")
                 .build();
         orderRepository.save(order);
@@ -176,7 +177,7 @@ public class VietQrServiceImpl implements VietQrService {
         return new QrCodeRes(body.qrLink(),body.content());
     }
 
-    private String getRedirectUrl(ServiceTypeEnums serviceType) {
+    private String getRedirectUrl(ProjectEnums serviceType) {
         return switch (serviceType) {
             case BIVEEDU -> serverClientProperties.getBive().getRedirect();
             case PODCAST -> serverClientProperties.getPodcast().getRedirect();
